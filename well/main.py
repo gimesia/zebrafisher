@@ -1,12 +1,10 @@
-import numpy as np
-import cv2 as cv
-
-from InputImage import WellProperties, InputImage
+from InputImage import InputImage
 from terminal_msg import msg
 from well.well_hough_transform import well_hough_transformation
 
 
 def main(input_img: InputImage) -> InputImage:
+    # Finding the properties of the
     if input_img.height >= input_img.width:
         input_img.wellProps.min_circle = 0 if (input_img.height - 400) < 0 else input_img.height - 400
         input_img.wellProps.max_circle = input_img.height
@@ -21,6 +19,6 @@ def main(input_img: InputImage) -> InputImage:
 
     #
     if input_img.wellProps.radius < input_img.height / 2 * .8:
-        preProcessedImg = pre
+        pass
 
     return input_img

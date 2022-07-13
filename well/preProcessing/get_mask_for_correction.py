@@ -12,26 +12,36 @@ and bright regions (papilla)
 def get_mask_correction(input_img: InputImage):
     double_img = np.double(input_img.processed)
 
-    # Reshaping the array, IDK why!
-    b_x = double_img.reshape((double_img.shape[0] * double_img.shape[1]), 1);
+    # Reshaping the array to (n,1) dimensions... IDK why!
+    b_x = double_img.flatten().reshape(-1, 1)
+    # Selecting unique values
+    b_y = np.unique(b_x).reshape(-1, 1)
 
-    b_y = np.unique(b_x);
-    b_n = histc(b_x, b_y);
+    # Histogram bin packing, maybe np.histogram is better
+    b_n = histc(b_x, b_y)
 
-    ## ITT TARTOTTAM
-    b_n[0] = [];
-    b_y[0] = [];
-    b_c = np.cumsum(b_n);
-    b_z = b_c / b_c[-1];
+    # Removing first element
+    b_n = b_n[1:]
+    b_y = b_y[1:]
 
-    low_perc = .15;
-    high_perc = .85;
+    # Cumulative sum of n
+    b_c = np.cumsum(b_n)
 
-    TL = b_y(find(b_z < low_perc, 1, 'last'));
-    TH = b_y(find(b_z > high_perc, 1, 'first'));
+    # ?
+    b_z = b_c / b_c[-1]
 
-    Xmask = np.zeros(input_img.processed.shape);
-    Xmask(find(input < TL | input > TH)) = 1;
-    Xmask2 = bwmorph(Xmask, 'dilate');
+    # Threshold levels
+    low_perc = .15
+    high_perc = .85
 
-    return Xmask2;
+    tl = b_y[np.argwhere(b_z < low_perc)][-1]
+    th = b_y[np.argwhere(b_z > high_perc)][0]
+
+    # Creating mask
+    xmask = np.zeros(input_img.processed.shape)
+    xmask[np.argwhere(
+        input_img.processed < tl or input_img.processed > th)] = 1  # xmask(find(input < tl | input > th)) = 1
+
+    mask = np.bwmorph(xmask, 'dilate')  # TODO!
+
+    return mask

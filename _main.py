@@ -36,7 +36,7 @@ def image_processing_pipeline(filename) -> InputImage:
     input_img.processed = np.uint8(input_img.processed)
 
     # Nem értem miért, de így van a MATLAB-ban
-    # msg("Double -> UInt8:", input_img.processed)
+    msg("Double -> UInt8:", input_img.processed)
 
     input_img = find_well_props(input_img)
 

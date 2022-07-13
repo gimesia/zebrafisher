@@ -1,12 +1,13 @@
 import numpy as np
 
 
-def histc(x: np.ndarray, bins: np.ndarray):
+def histc(x: np.ndarray, bins: np.ndarray) -> np.ndarray:
     map_to_bins = np.digitize(x, bins)
     r = np.zeros(bins.shape)
     for i in map_to_bins:
         r[i - 1] += 1
-    return [r, map_to_bins]
+    # Used to be: return [r, map_to_bins]
+    return r
 
 
 if __name__ == "__main__":
