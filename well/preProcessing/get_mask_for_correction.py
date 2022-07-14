@@ -1,3 +1,5 @@
+# !!! TODO: UNFINISHED
+
 import numpy as np
 
 from InputImage import InputImage
@@ -9,13 +11,13 @@ and bright regions (papilla)
 """
 
 
-def get_mask_correction(input_img: InputImage):
+def get_mask_correction(input_img: InputImage) -> InputImage:
     double_img = np.double(input_img.processed)
 
     # Reshaping the array to (n,1) dimensions... IDK why!
-    b_x = double_img.flatten().reshape(-1, 1)
+    b_x = double_img.flatten()  # .reshape(-1, 1)
     # Selecting unique values
-    b_y = np.unique(b_x).reshape(-1, 1)
+    b_y = np.unique(b_x)  # .reshape(-1, 1)
 
     # Histogram bin packing, maybe np.histogram is better
     b_n = histc(b_x, b_y)
@@ -34,14 +36,30 @@ def get_mask_correction(input_img: InputImage):
     low_perc = .15
     high_perc = .85
 
-    tl = b_y[np.argwhere(b_z < low_perc)][-1]
-    th = b_y[np.argwhere(b_z > high_perc)][0]
+    # Last one under & first one over the
+    # threshold
+    tl = b_y[np.argwhere(b_z < low_perc)][-1][0]
+    th = b_y[np.argwhere(b_z > high_perc)][0][0]
 
     # Creating mask
-    xmask = np.zeros(input_img.processed.shape)
-    xmask[np.argwhere(
-        input_img.processed < tl or input_img.processed > th)] = 1  # xmask(find(input < tl | input > th)) = 1
+    mask = np.zeros(input_img.processed.shape)
 
-    mask = np.bwmorph(xmask, 'dilate')  # TODO!
+    # Matlab code ->            xmask(find(input < tl | input > th)) = 1 >>
+    # Changing the pixels that don't meet the threshold requirements
+    TL = (np.argwhere(input_img.processed < tl))
+    TH = (np.argwhere(input_img.processed > th))
 
-    return mask
+    mask[TH] = 1  # TODO ITT A BAJ!!!
+
+    print(mask)
+
+    # mask = np.bwmorph(mask, 'dilate')  # TODO!
+
+    input_img.wellProps.mask = mask
+
+    return input_img
+
+
+if __name__ == "__main__":
+    img = InputImage("zf.png")
+    get_mask_correction(img)

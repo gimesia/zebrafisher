@@ -17,3 +17,4 @@ class WellProperties:
         self.center = None
         self.radius = None
         self.foundWell = None
+        self.mask = None
