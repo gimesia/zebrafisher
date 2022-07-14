@@ -4,6 +4,7 @@ import math
 import numpy as np
 
 from InputImage import InputImage
+from skimage.measure import profile_line
 
 
 def get_inner_roi(input_img: InputImage):
@@ -24,6 +25,8 @@ def get_inner_circle(input_img: InputImage):
     for i in range(start_pos_x[1]):
         x_line = [start_pos_x[i], end_pos_x[i]]
         y_line = [start_pos_y[i], end_pos_y[i]]
+
+        [c_x, c_y, c] =
 
     return
 
