@@ -9,6 +9,7 @@ scipy = "*"
 scikit-image = "*"
 matplotlib = "*"
 opencv-python = "*"
+circle-fit = "*"
 
 [dev-packages]
 

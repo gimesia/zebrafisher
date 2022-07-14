@@ -16,8 +16,8 @@ def well_hough_transformation(input_img: InputImage):
 
     # Use Hough transform (might have to change params)
     circles = cv.HoughCircles(image, cv.HOUGH_GRADIENT, 0.99, 100, param1=50, param2=30,
-                              minRadius=int(input_img.wellProps.min_circle / 2),
-                              maxRadius=int(input_img.wellProps.max_circle / 2))
+                              minRadius=int(input_img.well_props.min_circle / 2),
+                              maxRadius=int(input_img.well_props.max_circle / 2))
 
     # Rounding values for int16
     circles = np.uint16(np.around(circles))
@@ -35,7 +35,7 @@ def well_hough_transformation(input_img: InputImage):
     cv.circle(c_image, (circle[0], circle[1]), 1, (0, 100, 255), 4)
 
     # Storing circle properties in InputImage object
-    input_img.wellProps.radius, input_img.wellProps.center = circle[2], (circle[0], circle[1])
+    input_img.well_props.radius, input_img.well_props.center = circle[2], (circle[0], circle[1])
 
     # Storing result in the input object
     input_img.processed = c_image  # Nem biztos, hogy kell
@@ -45,6 +45,6 @@ def well_hough_transformation(input_img: InputImage):
 
 if __name__ == "__main__":
     img = InputImage("preProcessing/zf.png")
-    img.wellProps.min_circle = 0
-    img.wellProps.max_circle = 200
+    img.well_props.min_circle = 0
+    img.well_props.max_circle = 200
     well_hough_transformation(img)

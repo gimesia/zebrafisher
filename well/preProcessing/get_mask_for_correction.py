@@ -11,7 +11,7 @@ and bright regions (papilla)
 """
 
 
-def get_mask_correction(input_img: InputImage) -> InputImage:
+def get_mask_for_correction(input_img: InputImage) -> InputImage:
     double_img = np.double(input_img.processed)
 
     # Reshaping the array to (n,1) dimensions... IDK why!
@@ -55,11 +55,10 @@ def get_mask_correction(input_img: InputImage) -> InputImage:
 
     # mask = np.bwmorph(mask, 'dilate')  # TODO!
 
-    input_img.wellProps.mask = mask
+    input_img.well_props.mask = mask
 
     return input_img
 
 
 if __name__ == "__main__":
-    img = InputImage("zf.png")
-    get_mask_correction(img)
+    pass

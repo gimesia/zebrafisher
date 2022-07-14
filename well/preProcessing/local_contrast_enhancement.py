@@ -1,13 +1,11 @@
 # !!! TODO: UNFINISHED
 
 import numpy as np
-from scipy.signal import convolve2d
 
 from InputImage import InputImage
 
-"""
-TODO! körbepisilni a témát még egy kicsit -> roifilt2(), fspecial('average')
-"""
+
+# TODO! körbepisilni a témát még egy kicsit -> roifilt2(), fspecial('average')
 
 
 def local_contrast_enhancement(input_img: InputImage):

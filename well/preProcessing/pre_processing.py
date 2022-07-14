@@ -26,7 +26,5 @@ def pre_processing(input_img: InputImage) -> InputImage:
 
 
 if __name__ == "__main__":
-    res = InputImage("zf.png")
-    res = pre_processing(res)
-    show_img(res.processed)
+    pass
 
