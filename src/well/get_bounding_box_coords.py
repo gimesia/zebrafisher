@@ -1,6 +1,6 @@
 from skimage.measure import regionprops
 
-from InputImage import InputImage
+from src.InputImage import InputImage
 
 
 def get_bounding_box_coords(input_img: InputImage) -> InputImage:

@@ -2,7 +2,7 @@
 
 import numpy as np
 
-from InputImage import InputImage
+from src.InputImage import InputImage
 
 
 def robust_homomorphic_surface_fitting(input_img: InputImage, mask: np.ndarray) -> InputImage:

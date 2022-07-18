@@ -2,7 +2,7 @@
 
 import numpy as np
 
-from InputImage import InputImage
+from src.InputImage import InputImage
 
 
 # TODO! körbepisilni a témát még egy kicsit -> roifilt2(), fspecial('average')

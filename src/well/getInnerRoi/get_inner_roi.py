@@ -3,8 +3,7 @@
 import math
 import numpy as np
 
-from InputImage import InputImage
-from skimage.measure import profile_line
+from src.InputImage import InputImage
 
 
 def get_inner_roi(input_img: InputImage):
@@ -26,12 +25,13 @@ def get_inner_circle(input_img: InputImage):
         x_line = [start_pos_x[i], end_pos_x[i]]
         y_line = [start_pos_y[i], end_pos_y[i]]
 
-        [c_x, c_y, c] =
+        # TODO!!!ITT HAGYTAM ABBA
+        [c_x, c_y, c] = None
 
     return
 
 
-def get_coordinates(center_x, center_y, theta, radius):
+def get_coordinates(center_x: int, center_y: int, theta: np.ndarray, radius: float):
     x = radius * np.cos(np.deg2rad(theta)) + center_x
     y = radius * np.sin(np.deg2rad(theta)) + center_y
 

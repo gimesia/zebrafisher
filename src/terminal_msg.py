@@ -2,9 +2,10 @@ import cv2 as cv
 import numpy as np
 
 
-def msg(title: str, data: any):
+def msg(title: str, data: any = None):
     print(f"{title}\n\n")
-    print(f"{data}\n\n\n\n")
+    print(f"{data}\n")
+    print("_____________________________________________________________")
 
 
 def show_img(image: np.ndarray, title="Image"):

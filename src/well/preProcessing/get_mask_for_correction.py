@@ -2,8 +2,8 @@
 
 import numpy as np
 
-from InputImage import InputImage
-from well.preProcessing.histc import histc
+from src.InputImage import InputImage
+from src.well.preProcessing.histc import histc
 
 """
 get a mask for the structured pixels (dart regions (vessels and macula)

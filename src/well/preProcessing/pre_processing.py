@@ -1,12 +1,10 @@
 # !!! TODO: UNFINISHED
 
-import numpy as np
 import cv2 as cv
 from skimage.morphology import disk
 
-from InputImage import InputImage
-from terminal_msg import show_img
-from well.preProcessing.illumination_correction import illumination_correction
+from src.InputImage import InputImage
+from src.well.preProcessing.illumination_correction import illumination_correction
 
 
 def pre_processing(input_img: InputImage) -> InputImage:
