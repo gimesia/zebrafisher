@@ -3,8 +3,9 @@ import numpy as np
 
 
 def msg(title: str, data: any = None):
-    print(f"{title}\n\n")
-    print(f"{data}\n")
+    print(f"# {title}")
+    if data:
+        print(f"{data}\n")
     print("_____________________________________________________________")
 
 

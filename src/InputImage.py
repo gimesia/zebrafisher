@@ -6,8 +6,8 @@ class InputImage:
     def __init__(self, filename):
         self.og: np.ndarray = cv.imread(filename)
         self.processed: np.ndarray = cv.imread(filename, 0)
-        self.height: int = 0
-        self.width: int = 0
+        self.height: int = self.og.shape[0]
+        self.width: int = self.og.shape[1]
         self.well_props: WellProperties = WellProperties()
 
 

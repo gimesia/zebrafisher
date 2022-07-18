@@ -2,6 +2,7 @@
 
 from src.InputImage import InputImage
 from src.terminal_msg import msg
+from src.well.create_circle_mask import create_circle_mask
 from src.well.getInnerRoi.get_inner_roi import get_inner_roi
 from src.well.preProcessing.pre_processing import pre_processing
 from src.well.well_hough_transform import well_hough_transformation
@@ -25,5 +26,5 @@ def find_well_props(input_img: InputImage) -> InputImage:
         input_img = pre_processing(input_img)
         input_img.well_props.mask = get_inner_roi(input_img)
     else:
-        mask = create_circle_mask()
+        input_img = create_circle_mask(input_img)
     return input_img
