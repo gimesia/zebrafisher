@@ -1,16 +1,12 @@
-# !!! TODO: UNFINISHED
-
-
-from math import pi
-
 import numpy as np
-from circle_fit import hyper_fit
 
+from circle_fit import hyper_fit
+from math import pi
 from src.terminal_msg import msg
 
 
 def create_circle_mask(center: tuple[int, int], size: tuple[int, int], r: int) -> np.ndarray:
-    # msg("Create circle mask")
+    msg("Create circle mask")
     x, y = center[0], center[1]
 
     width, height = size[0], size[1]
@@ -30,8 +26,3 @@ def create_circle_mask(center: tuple[int, int], size: tuple[int, int], r: int) -
     mask = (np.power(x, 2) + np.power(y, 2) <= (r_fit ** 2))
 
     return mask
-
-
-if __name__ == "__main__":
-    a = create_circle_mask((10, 10), (20, 20), 5)
-    print(a)
