@@ -3,12 +3,22 @@
 import math
 import numpy as np
 from skimage.measure import profile_line
-from src.InputImage import InputImage
-from src.well.getInnerRoi.triangle_threshold import triangle_threshold
+from src.InputImage import InputImage, PROTOTYPE_IMG
+from src.terminal_msg import msg, show_img
+from skimage.filters import threshold_triangle
+import cv2 as cv
 
 
 def get_inner_roi(input_img: InputImage):
-    threshold_level = triangle_threshold(input_img)
+    msg("Getting the inner region of interest")
+    show_img(input_img.processed)
+
+    threshold_level, img = cv.threshold(input_img.processed, 0, 255, cv.THRESH_TRIANGLE + cv.THRESH_BINARY);
+    # threshold_level = threshold_triangle(input_img.processed, nbins=256)
+    print((img))
+    show_img(img)
+    print(threshold_level)
+
     return input_img
 
 
@@ -57,5 +67,5 @@ def get_coordinates(center_x: int, center_y: int, theta: np.ndarray, radius: flo
 
 
 if __name__ == '__main__':
-    img = InputImage("zf.png")
+    img = PROTOTYPE_IMG
     get_inner_roi(img)
