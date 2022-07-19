@@ -33,7 +33,7 @@ class WellProperties:
 
 class InputImage:
     def __init__(self, filename):
-        path = r'C:\Users\gimesia\Documents\PROJEKT\zebrafish_pipenv\src\images'
+        path = r'C:\Users\gimesia\Documents\PROJEKT\zebrafish_pipenv\src\images'  # NEED TO BE CHANGED IF RAN FROM ANOTHER COMPUTER
         path = path + "\\" + filename
 
         self.og: np.ndarray = cv.imread(path)

@@ -7,6 +7,7 @@ from src.terminal_msg import msg
 
 
 def create_circle_mask(input_img: InputImage) -> InputImage:
+    msg("Create circle mask for image")
     center = input_img.well_props.center
     radius = input_img.well_props.radius
     size = (input_img.width, input_img.height)
@@ -16,7 +17,7 @@ def create_circle_mask(input_img: InputImage) -> InputImage:
 
 
 def circle_mask(center: tuple[int, int], size: tuple[int, int], radius: int) -> np.ndarray:
-    msg("Create circle mask")
+    msg("Creating mask")
     x, y = center[0], center[1]
 
     width, height = size[0], size[1]

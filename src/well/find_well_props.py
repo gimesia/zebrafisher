@@ -22,9 +22,15 @@ def find_well_props(input_img: InputImage) -> InputImage:
     # Finding well via Hough-transformation
     input_img = well_hough_transformation(input_img)
 
-    if input_img.well_props.radius < input_img.height / 2 * .8:
+    if input_img.well_props.center:
+        if input_img.well_props.radius < input_img.height / 2 * .8:
+            # Pre-processes image & gets ROI if the size of the radius is not satisfactory
+            input_img = pre_processing(input_img)
+            input_img.well_props.mask = get_inner_roi(input_img)
+        else:
+            input_img = create_circle_mask(input_img)
+    else:
+        # Pre-processes image & gets ROI if the Hough-transformation cannot find a circle
         input_img = pre_processing(input_img)
         input_img.well_props.mask = get_inner_roi(input_img)
-    else:
-        input_img = create_circle_mask(input_img)
     return input_img

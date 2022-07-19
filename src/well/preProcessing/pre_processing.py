@@ -4,10 +4,13 @@ import cv2 as cv
 from skimage.morphology import disk
 
 from src.InputImage import InputImage
+from src.terminal_msg import msg
 from src.well.preProcessing.illumination_correction import illumination_correction
 
 
 def pre_processing(input_img: InputImage) -> InputImage:
+    msg("Preprocessing image")
+
     # cannot specify 'n' from the original, the number of line structuring elements used to approximate the disk shape
     structuring_element = disk(15)
 

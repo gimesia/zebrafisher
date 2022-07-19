@@ -1,5 +1,7 @@
 import numpy as np
 
+from src.terminal_msg import msg
+
 
 def normalize_intensity_range(image: np.ndarray, rng: tuple[int, int]) -> np.ndarray:
     """
@@ -7,6 +9,7 @@ def normalize_intensity_range(image: np.ndarray, rng: tuple[int, int]) -> np.nda
 
     :rtype: np.ndarray, dtype = double
     """
+    msg("Normalizing intensity")
     double_precision_image = np.double(image)
     mx = np.max(double_precision_image)
     mn = np.min(double_precision_image)

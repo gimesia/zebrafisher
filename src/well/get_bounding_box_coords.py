@@ -1,9 +1,11 @@
 from skimage.measure import regionprops
 
 from src.InputImage import InputImage
+from src.terminal_msg import msg
 
 
 def get_bounding_box_coords(input_img: InputImage) -> InputImage:
+    msg("Get bounding box")
     actual_height, actual_width = input_img.height, input_img.width
 
     # input_img.processed = bwareafilt(input_img.processed)
@@ -27,6 +29,6 @@ def get_bounding_box_coords(input_img: InputImage) -> InputImage:
 
 
 if __name__ == "__main__":
-    a = InputImage("preProcessing/zf.png")
+    a = InputImage("zf.png")
     get_bounding_box_coords(a)
     print(a.well_props.bounding_box)
