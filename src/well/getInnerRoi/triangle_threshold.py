@@ -2,7 +2,7 @@
 
 import numpy as np
 
-from src.InputImage import InputImage, PROTOTYPE_IMG
+from src.InputImage import InputImage, EXAMPLE_IMG
 from src.terminal_msg import msg
 
 
@@ -85,7 +85,7 @@ def triangle_threshold(input_img: InputImage) -> float:
 
 
 if __name__ == '__main__':
-    img = PROTOTYPE_IMG
+    img = EXAMPLE_IMG
     res = triangle_threshold(img)
     print(res)
 

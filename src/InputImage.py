@@ -1,7 +1,15 @@
-from typing import Tuple
-
 import cv2 as cv
 import numpy as np
+
+
+class Measures():
+    def __int__(self):
+        self.well_roi: [int, int, int, int] = None
+        self.fish_roi = None
+        self.tail_length = None
+        self.eye_diameter = None
+        self.head_endpoint = None
+        self.tail_endpoint = None
 
 
 class FishProperties:
@@ -10,14 +18,25 @@ class FishProperties:
 
 
 class BoundingBox:
-    def __init__(self):
-        self.x1: int = None
-        self.y1: int = None
-        self.x2: int = None
-        self.y2: int = None
+    def __init__(self, x1=None, y1=None, x2=None, y2=None):
+        self.x1: int = x1
+        self.y1: int = y1
+        self.x2: int = x2
+        self.y2: int = y2
+
+    def get(self) -> [int, int, int, int]:
+        return [self.x1, self.y1, self.x2, self.y2]
 
     def __str__(self):
         return f"x1: {self.x1},\ny1: {self.y1},\nx2: {self.x2},\ny2: {self.y2}"
+
+
+class Mask:
+    def __int__(self):
+        self.og: np.ndarray = None
+        self.cropped: np.ndarray = None
+        self.gray: np.ndarray = None
+        self.cropped_gray: np.ndarray = None
 
 
 class WellProperties:
@@ -26,9 +45,9 @@ class WellProperties:
         self.max_circle: int = None
         self.center: tuple[int, int] = None
         self.radius: int = None
-        self.found_well: bool = None
-        self.mask: np.ndarray = None
         self.bounding_box: BoundingBox = BoundingBox()
+        self.mask: Mask = Mask()
+        self.found: bool = None
 
 
 class InputImage:
@@ -41,9 +60,10 @@ class InputImage:
         self.height: int = 0
         self.width: int = 0
         self.well_props: WellProperties = WellProperties()
+
         try:
             self.set_size()
-        except:
+        except():
             raise Exception("Image loading failed")
 
     def set_size(self):
@@ -54,8 +74,8 @@ class InputImage:
         return self.height, self.width
 
 
-PROTOTYPE_IMG = InputImage("zf2.jpg")
+EXAMPLE_IMG = InputImage("zf2.jpg")
 
 if __name__ == '__main__':
-    img = PROTOTYPE_IMG
+    img = EXAMPLE_IMG
     print(img.size())

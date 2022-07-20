@@ -3,7 +3,7 @@
 import math
 import numpy as np
 from skimage.measure import profile_line
-from src.InputImage import InputImage, PROTOTYPE_IMG
+from src.InputImage import InputImage, EXAMPLE_IMG
 from src.terminal_msg import msg, show_img
 from skimage.filters import threshold_triangle
 import cv2 as cv
@@ -67,5 +67,5 @@ def get_coordinates(center_x: int, center_y: int, theta: np.ndarray, radius: flo
 
 
 if __name__ == '__main__':
-    img = PROTOTYPE_IMG
+    img = EXAMPLE_IMG
     get_inner_roi(img)

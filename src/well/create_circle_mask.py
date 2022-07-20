@@ -10,17 +10,17 @@ def create_circle_mask(input_img: InputImage) -> InputImage:
     msg("Create circle mask for image")
     center = input_img.well_props.center
     radius = input_img.well_props.radius
-    size = (input_img.width, input_img.height)
+    size = (input_img.height, input_img.width)
 
-    input_img.well_props.mask = circle_mask(center, size, radius)
+    input_img.well_props.mask.og = circle_mask(center, size, radius)
     return input_img
 
 
 def circle_mask(center: tuple[int, int], size: tuple[int, int], radius: int) -> np.ndarray:
     msg("Creating mask")
-    x, y = center[0], center[1]
 
-    width, height = size[0], size[1]
+    x, y = center[0], center[1]
+    height, width = size[0], size[1]
 
     theta = np.arange(0, 2 * pi + (pi / 50), pi / 50)
 
@@ -32,27 +32,18 @@ def circle_mask(center: tuple[int, int], size: tuple[int, int], radius: int) -> 
 
     [x_fit, y_fit, r_fit, residue] = hyper_fit(concatenated)
 
-    [x, y] = np.meshgrid(np.arange(-(x_fit - 1), (width - x_fit)), np.arange(-(y_fit - 1), (height - y_fit)))
+    [x, y] = np.meshgrid(np.arange(-(x_fit - 1), (width - x_fit + 1)), np.arange(-(y_fit - 1), (height - y_fit + 1)))
 
-    mask = (np.power(x, 2) + np.power(y, 2) <= (r_fit ** 2))
+    mask = (np.power(x, 2) + np.power(y, 2) <= (r_fit ** 2)).astype(int)
+
+    """if mask.shape != size:
+        raise Exception(f"The mask and the image are not the same dimensions\n"
+                        f"Mask shape: {mask.shape}\n"
+                        f"OG shape: {size}")"""
 
     return mask
 
 
 # For testing
 if __name__ == "__main__":
-    a = circle_mask((100, 100), (200, 200), 70)
-    a = np.uint8(a)
-    np.savetxt("mask.csv", a, delimiter=",")
-
-    from numpy import genfromtxt
-
-    b = np.uint8(genfromtxt('mask_m.csv', delimiter=','))
-
-    false_count = 0
-    for i in range(a.shape[0]):
-        for j in range(a.shape[1]):
-            res = a[i][j] == b[i][j]
-            if not res:
-                false_count += 1
-    print(false_count)
+    pass

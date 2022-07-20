@@ -25,10 +25,16 @@ def image_processing_pipeline(filename) -> InputImage:
 
     input_img = find_well_props(input_img)
 
+    if not input_img.well_props.found:
+        # save_empty_measures()
+        pass
+    else:
+        pass
     return input_img
 
 
 if __name__ == '__main__':
-    res = image_processing_pipeline("zf.png")
-    show_img(res.processed, "Testy")
+    res = image_processing_pipeline("zf.jpg")
+    show_img(res.og)
+    show_img(res.well_props.mask.cropped_gray, "Testy")
     # np.savetxt("P.csv" ans, delimiter=",")

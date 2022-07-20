@@ -2,7 +2,7 @@ import cv2 as cv
 import numpy as np
 from skimage.color import gray2rgb
 
-from src.InputImage import InputImage
+from src.InputImage import InputImage, EXAMPLE_IMG
 from src.terminal_msg import msg
 
 
@@ -22,7 +22,10 @@ def well_hough_transformation(input_img: InputImage):
     circles = np.uint16(np.around(circles))
 
     # Selecting first circle
-    circle = circles[0][0]
+    try:
+        circle = circles[0][0]
+    except():
+        return input_img
 
     """ FROM line 28-35 is for visual testing, will need to comment it out"""
     # Converting back to RGB to be able to put colorful indicators for center and line
@@ -31,7 +34,7 @@ def well_hough_transformation(input_img: InputImage):
     cv.circle(c_image, (circle[0], circle[1]), circle[2], (0, 255, 0), 2)
     # draw the center
     cv.circle(c_image, (circle[0], circle[1]), 1, (0, 100, 255), 4)
-    input_img.processed = c_image
+    # input_img.processed = c_image
 
     # Storing circle radius in input object
     input_img.well_props.radius = circle[2]
@@ -42,7 +45,7 @@ def well_hough_transformation(input_img: InputImage):
 
 
 if __name__ == "__main__":
-    img = InputImage("preProcessing/zf.png")
+    img = EXAMPLE_IMG
     img.well_props.min_circle = 0
     img.well_props.max_circle = 200
     well_hough_transformation(img)
