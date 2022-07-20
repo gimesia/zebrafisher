@@ -15,6 +15,6 @@ def normalize_intensity_range(image: np.ndarray, rng: tuple[int, int]) -> np.nda
     mn = np.min(double_precision_image)
 
     # Element-wise (should be right-side) division, maybe I could use 'np.true_divide'
-    normalised_first = (double_precision_image - mn) / (mx - mn)
+    normalised_first: np.ndarray = (double_precision_image - mn) / (mx - mn)
 
     return (normalised_first * (rng[1] - rng[0])) + rng[0]

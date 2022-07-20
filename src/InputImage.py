@@ -2,7 +2,7 @@ import cv2 as cv
 import numpy as np
 
 
-class Measures():
+class Measures:
     def __int__(self):
         self.well_roi: [int, int, int, int] = None
         self.fish_roi = None
