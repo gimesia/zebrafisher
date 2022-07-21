@@ -10,6 +10,7 @@ scikit-image = "*"
 matplotlib = "*"
 opencv-python = "*"
 circle-fit = "*"
+scikit-learn = "*"
 
 [dev-packages]
 
