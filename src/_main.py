@@ -3,7 +3,7 @@ import numpy as np
 from src.InputImage import InputImage
 from src.well.find_well_props import find_well_props
 from terminal_msg import msg, show_img
-from src.well.normalize_intensity_range import normalize_intensity_range
+from src.filters.normalize_intensity_range import normalize_intensity_range
 
 image_width: int
 image_height: int
@@ -35,6 +35,7 @@ def image_processing_pipeline(filename) -> InputImage:
 
 if __name__ == '__main__':
     res = image_processing_pipeline("zf.jpg")
-    show_img(res.og)
     show_img(res.well_props.mask.cropped_gray, "Testy")
-    # np.savetxt("P.csv" ans, delimiter=",")
+    np.savetxt("P.csv", res.well_props.mask.gray, delimiter=",")
+    res = np.genfromtxt("P.csv",delimiter=",")
+    show_img(res)

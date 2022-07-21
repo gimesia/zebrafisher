@@ -1,7 +1,6 @@
 import numpy as np
 
 from src.InputImage import InputImage, EXAMPLE_IMG
-from src.well.normalize_intensity_range import normalize_intensity_range
 
 
 def find_fish_props(input_img: InputImage) -> InputImage:
