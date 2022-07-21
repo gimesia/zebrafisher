@@ -1,7 +1,6 @@
-# !!! TODO: UNFINISHED
 import numpy as np
 
-from src.InputImage import InputImage
+from src.InputImage import InputImage, BoundingBox
 from src.terminal_msg import msg
 from src.well.create_circle_mask import create_circle_mask
 from src.well.getInnerRoi.get_inner_roi import get_inner_roi
@@ -25,15 +24,17 @@ def find_well_props(input_img: InputImage) -> InputImage:
     # Finding well via Hough-transformation
     input_img = well_hough_transformation(input_img)
 
-    if input_img.well_props.center:
+    # If circle was found
+    if input_img.well_props.center is not None:
+        # If the well radius's length is not satisfactory (WAS IN MATLAB)
         if input_img.well_props.radius < input_img.height / 2 * .8:
             # Pre-processes image & gets ROI if the length of the radius is not satisfactory
             input_img = pre_processing(input_img)
             input_img.well_props.mask.og = get_inner_roi(input_img)
         else:
             input_img = create_circle_mask(input_img)
+    # Pre-processes image & gets ROI if the Hough-transformation cannot find a circle
     else:
-        # Pre-processes image & gets ROI if the Hough-transformation cannot find a circle
         input_img = pre_processing(input_img)
         input_img.well_props.mask = get_inner_roi(input_img)
 
@@ -43,6 +44,7 @@ def find_well_props(input_img: InputImage) -> InputImage:
         input_img.well_props.found = True
 
         [x1, y1, x2, y2] = get_bounding_box_coords(input_img.well_props.mask.og)  # Getting boundaries of the mask
+        input_img.well_props.bounding_box = BoundingBox(x1, y1, x2, y2)
 
         input_img.well_props.mask.cropped = input_img.well_props.mask.og[x1:x2 + 1, y1:y2 + 1]  # Creating cropped mask
 

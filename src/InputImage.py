@@ -18,7 +18,7 @@ class FishProperties:
 
 
 class BoundingBox:
-    def __init__(self, x1=None, y1=None, x2=None, y2=None):
+    def __init__(self, x1: int = None, y1: int = None, x2: int = None, y2: int = None):
         self.x1: int = x1
         self.y1: int = y1
         self.x2: int = x2
