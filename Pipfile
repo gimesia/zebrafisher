@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 numpy = "*"
 scipy = "*"
-scikit-image = "==0.18.0"
+scikit-image = "*"
 matplotlib = "*"
 opencv-python = "*"
 circle-fit = "*"

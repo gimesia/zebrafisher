@@ -1,5 +1,6 @@
 import cv2 as cv
 import numpy as np
+from matplotlib import pyplot as plt
 
 
 class Measures:
@@ -14,7 +15,12 @@ class Measures:
 
 class FishProperties:
     def __init__(self):
-        self.fish = None
+        self.is_fish: bool = None
+        self.bounding_box: BoundingBox = BoundingBox()
+        self.rotated: bool = None
+        self.og_segmented: np.ndarray = None
+        self.container = None
+        self.mod_cont = None
 
 
 class BoundingBox:
@@ -57,9 +63,11 @@ class InputImage:
 
         self.og: np.ndarray = cv.imread(path)
         self.processed: np.ndarray = cv.imread(path, 0)  # Already processes it to gray
+        self.binary: np.ndarray = np.zeros_like(self.og.shape)
         self.height: int = 0
         self.width: int = 0
         self.well_props: WellProperties = WellProperties()
+        self.fish_props: FishProperties = FishProperties()
 
         try:
             self.set_size()
