@@ -21,14 +21,11 @@ def get_plate_width_and_remove_sides(binary_img: np.ndarray, well_mask: Mask, co
     return
 
 
-def get_mean_col_sum_for_structuring_element(data: np.ndarray, corner: str, corrected_step: bool):
-    global cont
-    global mod_cont
-
+def get_mean_col_sum_for_structuring_element(data: np.ndarray, corner: str, corrected_step: bool, cont, mod_cont):
     thresh_well = np.zeros_like(data.shape)
 
     col_sum = np.sum(data[-1:1])  # in matlab ->   data'
-    mean_data = np.floor(np.mean(col_sum(col_sum > 0)))
+    mean_data = np.floor(np.mean(col_sum > 0))
 
     if not corrected_step:
         img = cont
