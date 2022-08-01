@@ -25,7 +25,7 @@ def well_hough_transformation(input_img: InputImage):
     try:
         circle = circles[0][0]
     except():
-        return input_img
+        raise Exception("No well circle found")
 
     """ FROM line 28-35 is for visual testing, will need to comment it out"""
     # Converting back to RGB to be able to put colorful indicators for center and line
