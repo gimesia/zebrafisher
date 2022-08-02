@@ -2,7 +2,7 @@
 
 import numpy as np
 
-from src.InputImage import InputImage
+from src.models import InputImage
 from src.well.preProcessing.histc import histc
 
 """

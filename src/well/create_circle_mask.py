@@ -2,7 +2,7 @@ import numpy as np
 
 from circle_fit import hyper_fit
 from math import pi
-from src.InputImage import InputImage
+from src.models import InputImage
 from src.terminal_msg import msg
 
 

@@ -1,14 +1,14 @@
 import numpy as np
 import scipy
-from skimage import measure, filters, morphology
+from skimage import measure, morphology
 from skimage.morphology import disk, closing
 
-from src.InputImage import InputImage, Mask
-from src.fish.get_possible_fish import modify_circle, get_objects, is_fish, get_plate_width_and_remove_sides
+from src.models import InputImage, Mask
+from src.fish import modify_circle, get_objects, is_fish, get_meniscus
 from src.well.is_empty_img import is_empty_img
 
 
-def get_possible_fish(input_img: InputImage):
+def _get_possible_fish(input_img: InputImage):
     """
     Returns the sum of two decimal numbers in binary digits.
 
@@ -18,7 +18,7 @@ def get_possible_fish(input_img: InputImage):
         Returns:
                 output_img (InputImage):
     """
-    well_cropped_gray = input_img.well_props.mask.cropped_gray
+    well_cropped_gray = input_img.well_props.mask.cropped_masked
 
     segmented_fish_size_first = np.zeros_like(input_img.og)
     segmented_fish_size_second = np.zeros_like(input_img.og)
@@ -32,7 +32,7 @@ def get_possible_fish(input_img: InputImage):
     input_img.fish_props.container = measure.perimeter(input_img.well_props.mask.cropped)  # Ez nem jó
     binary_img = morphology.area_opening(input_img.processed, 100)
 
-    thresholded_mask = get_plate_width_and_remove_sides(,, False)
+    thresholded_mask = get_meniscus(input_img, False)
     input_img.fish_props.mod_cont = thresholded_mask
 
     binary_img[np.where(thresholded_mask > 0)] = 0

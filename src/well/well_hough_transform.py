@@ -2,7 +2,7 @@ import cv2 as cv
 import numpy as np
 from skimage.color import gray2rgb
 
-from src.InputImage import InputImage, EXAMPLE_IMG
+from src.models import InputImage, EXAMPLE_IMG
 from src.terminal_msg import msg
 
 

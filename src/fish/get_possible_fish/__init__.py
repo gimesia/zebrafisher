@@ -1,5 +1,0 @@
-from get_objects import get_objects
-from get_plate_width_and_remove_sides import get_plate_width_and_remove_sides
-from get_possible_fish import get_possible_fish
-from is_fish import is_fish
-from modify_circle import modify_circle

@@ -1,6 +1,6 @@
 import numpy as np
 
-from src.InputImage import InputImage
+from src.models.InputImage import InputImage
 from src.well.find_well_props import find_well_props
 from terminal_msg import msg, show_img
 from src.filters.normalize_intensity_range import normalize_intensity_range
@@ -25,7 +25,7 @@ def image_processing_pipeline(filename) -> InputImage:
 
     input_img = find_well_props(input_img)
 
-    if not input_img.well_props.found:
+    if not input_img.well_props.is_well:
         # save_empty_measures()
         pass
     else:
@@ -35,7 +35,7 @@ def image_processing_pipeline(filename) -> InputImage:
 
 if __name__ == '__main__':
     res = image_processing_pipeline("zf.jpg")
-    show_img(res.well_props.mask.cropped_gray, "Testy")
-    np.savetxt("P.csv", res.well_props.mask.gray, delimiter=",")
-    res = np.genfromtxt("P.csv",delimiter=",")
-    show_img(res)
+    show_img(res.well_props.mask.cropped_masked, "Testy")
+    #    np.savetxt("P.csv", res.og, delimiter=",")
+    # res = np.genfromtxt("P.csv",delimiter=",")
+    print(vars(res.well_props))

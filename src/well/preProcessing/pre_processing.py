@@ -3,7 +3,7 @@
 import cv2 as cv
 from skimage.morphology import disk
 
-from src.InputImage import InputImage
+from src.models import InputImage
 from src.terminal_msg import msg
 from src.well.preProcessing.illumination_correction import illumination_correction
 
@@ -28,4 +28,3 @@ def pre_processing(input_img: InputImage) -> InputImage:
 
 if __name__ == "__main__":
     pass
-

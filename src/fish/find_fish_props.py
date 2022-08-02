@@ -1,9 +1,8 @@
 import numpy as np
 from skimage.morphology import disk, opening
-from skimage.transform import rotate
 
-from src.InputImage import InputImage, EXAMPLE_IMG
-from src.fish.get_possible_fish import get_possible_fish
+from src.models.InputImage import InputImage, EXAMPLE_IMG
+from src.fish._get_possible_fish import _get_possible_fish
 
 
 def find_fish_props(input_img: InputImage) -> InputImage:
@@ -34,7 +33,7 @@ def find_fish_props(input_img: InputImage) -> InputImage:
 
     input_img.binary = bin_filtered
 
-    input_img = get_possible_fish(input_img)
+    input_img = _get_possible_fish(input_img)
 
     if input_img.fish_props.is_fish:
         x1 = input_img.fish_props.bounding_box.x1
@@ -60,4 +59,4 @@ def find_fish_props(input_img: InputImage) -> InputImage:
 
 if __name__ == '__main__':
     a = EXAMPLE_IMG
-    print(a)
+    print(a.__dict__)

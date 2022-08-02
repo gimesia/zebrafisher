@@ -2,11 +2,11 @@
 
 import math
 import numpy as np
-from skimage.measure import profile_line
-from src.InputImage import InputImage, EXAMPLE_IMG
-from src.terminal_msg import msg, show_img
-from skimage.filters import threshold_triangle
 import cv2 as cv
+from skimage.measure import profile_line
+
+from src.models import InputImage, EXAMPLE_IMG
+from src.terminal_msg import msg, show_img
 
 
 def get_inner_roi(input_img: InputImage):

@@ -1,17 +1,17 @@
 import numpy as np
 from skimage.morphology import disk, dilation, erosion, area_opening
 
-from src import Mask
+from src.models.InputImage import InputImage
 
 
-def get_plate_width_and_remove_sides(binary_img: np.ndarray, well_mask: Mask, corrected=False):
-    possible_well_size_th = np.zeros_like(binary_img)
+def get_meniscus(input_img: InputImage, corrected=False):
+    possible_well_size_th = np.zeros_like(input_img.binary)
 
-    remaining_binary_img = binary_img
+    remaining_binary_img = input_img.binary
 
     if not corrected:
         structuring_element = disk(21)
-        eroded_well = erosion(well_mask.cropped)
+        eroded_well = erosion(input_img.well_props.mask.cropped)
 
         remaining_binary_img[np.where(eroded_well > 0)] = 0
         remaining_binary_img = area_opening(remaining_binary_img, 100)

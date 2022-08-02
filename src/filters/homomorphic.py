@@ -1,6 +1,6 @@
 import numpy as np
 
-from src.InputImage import EXAMPLE_IMG
+from src.models import EXAMPLE_IMG
 from src.filters.high_boost_filter import high_boost_filter
 from src.filters.normalize_intensity_range import normalize_0_1, normalize_min_max
 from src.terminal_msg import show_img

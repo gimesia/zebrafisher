@@ -2,7 +2,7 @@
 
 import numpy as np
 
-from src.InputImage import InputImage, EXAMPLE_IMG
+from src.models import InputImage, EXAMPLE_IMG
 from src.terminal_msg import msg
 
 

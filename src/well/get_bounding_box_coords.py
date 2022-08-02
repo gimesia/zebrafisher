@@ -1,7 +1,7 @@
 import numpy as np
 from skimage.measure import regionprops
 
-from src.InputImage import EXAMPLE_IMG
+from src.models import EXAMPLE_IMG
 from src.terminal_msg import msg
 
 
