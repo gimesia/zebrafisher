@@ -6,7 +6,7 @@ from src.terminal_msg import msg
 
 
 def get_bounding_box_coords(img: np.ndarray) -> [int, int, int, int]:
-    msg("Get bounding box")
+    msg("Getting bounding box of well")
     actual_height, actual_width = img.shape[0], img.shape[1]
 
     # img.processed = bwareafilt(img.processed)
@@ -24,5 +24,4 @@ def get_bounding_box_coords(img: np.ndarray) -> [int, int, int, int]:
 
 
 if __name__ == "__main__":
-    a = EXAMPLE_IMG
-    print(get_bounding_box_coords(a.processed))
+    pass

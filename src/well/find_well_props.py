@@ -11,8 +11,7 @@ from src.well.well_hough_transform import well_hough_transformation
 
 
 def find_well_props(input_img: InputImage) -> InputImage:
-    msg("Find well props")
-
+    msg("Searching well properties")
     # Finding the properties of the well, might be wrong but this is how it was in the MATLAB script
     if input_img.height >= input_img.width:
         input_img.well_props.min_circle = 0 if (input_img.height - 400) < 0 else input_img.height - 400

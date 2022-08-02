@@ -9,11 +9,9 @@ from src.terminal_msg import show_img, msg
 class InputImage:
     def __init__(self, filename):
         import os
-        print(os.path.dirname(__file__))
 
         path = os.path.dirname(__file__)  # r'src/images'  # NEED TO BE CHANGED IF RAN FROM ANOTHER COMPUTER
         path = path + "\\images\\" + filename
-        print(path)
 
         self.og: np.ndarray = cv.imread(path)
         self.processed: np.ndarray = cv.imread(path, 0)  # Already processes it to gray
