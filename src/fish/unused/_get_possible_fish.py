@@ -4,7 +4,7 @@ from skimage import measure, morphology
 from skimage.morphology import disk, closing
 
 from src.models import InputImage, Mask
-from src.fish import modify_circle, get_objects, is_fish, get_meniscus
+from src.fish.unused import get_objects, get_meniscus, is_fish, modify_circle
 from src.well.is_empty_img import is_empty_img
 
 
