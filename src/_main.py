@@ -2,7 +2,7 @@ import numpy as np
 import cv2 as cv
 
 from src.fish import find_fish_props
-from src.models.InputImage import InputImage
+from src.models.InputImage import InputImage, EXAMPLE_IMG
 from src.well.find_well_props import find_well_props
 from terminal_msg import msg, show_img
 from src.filters.normalize_intensity_range import normalize_intensity_range
@@ -25,18 +25,24 @@ def image_processing_pipeline(filename) -> InputImage:
 
     input_img = find_well_props(input_img)
 
-    if not input_img.well_props.is_well:
-        raise Exception("No well was found")
-    else:
+    if input_img.well_props.is_well:
         msg("FOUND WELL!")
+    else:
+        Warning("No well was found!")
+
+    cv.imshow("YO", input_img.processed)
+    cv.waitKey(0)
+    cv.destroyAllWindows()
 
     input_img = find_fish_props(input_img)
-    show_img(input_img.processed)
 
-    if not input_img.fish_props.is_fish:
-        raise Exception("No fish was found")
-    else:
+
+
+
+    if input_img.fish_props.is_fish:
         msg("FOUND FISH!")
+    else:
+        Warning("No fish was found!")
 
     return input_img
 

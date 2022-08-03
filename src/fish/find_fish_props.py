@@ -1,6 +1,7 @@
 import numpy as np
 from scipy.signal import wiener
 from skimage.morphology import disk, opening
+import cv2 as cv
 
 from src.fish.get_possible_fish import get_possible_fish
 from src.fish.guassian_hpf import gaussian_high_pass_filter
@@ -16,8 +17,6 @@ def find_fish_props(input_img: InputImage) -> InputImage:
     input_img = gaussian_high_pass_filter(input_img)
 
     input_img = yen_thresholding(input_img)
-
-    show_img(input_img.binary)
 
     # filtered_img = wiener(input_img.processed, (5, 5))
 
