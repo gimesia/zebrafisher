@@ -23,6 +23,7 @@ def image_processing_pipeline(filename) -> InputImage:
     # Converting back to unsigned integers Double -> UInt8
     input_img.processed = np.uint8(input_img.processed)
 
+    # Find well script
     input_img = find_well_props(input_img)
 
     if input_img.well_props.is_well:
@@ -30,14 +31,8 @@ def image_processing_pipeline(filename) -> InputImage:
     else:
         Warning("No well was found!")
 
-    cv.imshow("YO", input_img.processed)
-    cv.waitKey(0)
-    cv.destroyAllWindows()
-
+    # Find fish script
     input_img = find_fish_props(input_img)
-
-
-
 
     if input_img.fish_props.is_fish:
         msg("FOUND FISH!")
@@ -49,4 +44,4 @@ def image_processing_pipeline(filename) -> InputImage:
 
 if __name__ == '__main__':
     res = image_processing_pipeline("zf1.jpg")
-    print(res.__dict__)
+

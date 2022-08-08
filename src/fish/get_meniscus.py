@@ -4,20 +4,24 @@ from skimage.morphology import disk, dilation, erosion, area_opening
 from src.models.InputImage import InputImage
 
 
-def get_meniscus(input_img: InputImage, corrected=False):
+def get_meniscus_for_input_img(input_img: InputImage, corrected=False) -> np.ndarray:
     binary_img = input_img.binary
     well_mask = input_img.well_props.mask.cropped
 
-    if binary_img.shape != well_mask.shape:
+    return get_meniscus(binary_img, well_mask)
+
+
+def get_meniscus(binary_img: np.ndarray, mask: np.ndarray, corrected=False) -> np.ndarray:
+    if binary_img.shape != mask.shape:
         raise Exception("Arguments 'binary_img' and 'well_mask' must have equal shape" +
-                        f"\n'binary_img': {binary_img.shape} != 'well_mask': {well_mask.shape}")
+                        f"\n'binary_img': {binary_img.shape} != 'well_mask': {mask.shape}")
 
     possible_well_size_th = np.zeros_like(binary_img)
     remaining_binary_img = binary_img
 
     if not corrected:
         structuring_element = disk(21)
-        eroded_well = erosion(well_mask, structuring_element)
+        eroded_well = erosion(mask, structuring_element)
         remaining_binary_img[np.where(eroded_well > 0)] = 0
     #    remaining_binary_img = morphology.area_opening(remaining_binary_img, 100)
 
@@ -42,7 +46,7 @@ def get_meniscus(input_img: InputImage, corrected=False):
 
 
 def get_mean_col_sum_for_structuring_element(data: np.ndarray, corner: str,
-                                             corrected_step: bool = False):  #cont, mod_cont
+                                             corrected_step: bool = False):  # cont, mod_cont
     thresh_well = np.zeros_like(data.shape)
 
     col_sum = np.sum(data[-1:1])  # in matlab ->   data'
