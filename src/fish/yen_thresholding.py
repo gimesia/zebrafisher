@@ -1,17 +1,17 @@
 import numpy as np
 import cv2 as cv
 from skimage.filters.thresholding import threshold_yen
-from skimage.morphology import disk, binary_dilation, binary_erosion, remove_small_holes, remove_small_objects
+from skimage.morphology import disk, binary_dilation, binary_erosion, remove_small_holes, remove_small_objects, \
+    binary_opening, square
 
 from src.models import InputImage
 from src.terminal_msg import msg, show_img
 
 
-def removing_speckles(img: np.ndarray) -> np.ndarray:
-    se = disk(2)
-    dilated = binary_dilation(img, footprint=se)
+def remove_speckles(img: np.ndarray) -> np.ndarray:
+    min_area = img.size * 0.01  # Should be minimum 1% of the picture
 
-    return remove_small_objects(remove_small_holes(dilated, connectivity=np.ndim(dilated), area_threshold=100))
+    return remove_small_objects(remove_small_holes(img.astype(bool), min_area), min_area).astype(np.double) # np.double for openCV to be able to open it
 
 
 def yen_th(img: np.ndarray) -> np.ndarray:
@@ -21,10 +21,8 @@ def yen_th(img: np.ndarray) -> np.ndarray:
     :return: Binary int picture
     """
     thresh = threshold_yen(img)
-    binary = np.zeros(img.shape, dtype=int)
-    binary[np.where(img > thresh)] = 1
 
-    return binary
+    return (img > thresh).astype(np.double)  # np.double for openCV to be able to open it
 
 
 def yen_thresholding(input_img: InputImage) -> InputImage:
@@ -37,7 +35,12 @@ def yen_thresholding(input_img: InputImage) -> InputImage:
 
     th = yen_th(input_img.processed)
 
+    th = remove_speckles(th)
+
+    th = th * input_img.well_props.mask.cropped
+
     input_img.binary = th
+    input_img.processed = th
     msg("Stored binary image in object")
 
     return input_img

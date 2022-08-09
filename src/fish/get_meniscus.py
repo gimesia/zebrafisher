@@ -4,8 +4,19 @@ from skimage.morphology import disk, dilation, erosion, area_opening
 from src.models.InputImage import InputImage
 
 
-def get_meniscus_for_input_img(input_img: InputImage, corrected=False) -> np.ndarray:
-    binary_img = input_img.binary
+def get_meniscus(input_img: InputImage, corrected=False) -> np.ndarray:
+    """
+    Find the illumination caused by the meniscus effect from InputImage object.
+    Object must have 'well_props.mask_cropped' & 'binary' attributes!
+
+    :param input_img:
+    :param corrected:
+    :return: binary image of meniscus
+    """
+    if input_img.binary is None:
+        raise Exception("No binary image to find meniscus from!")
+
+    binary_img = input_img.binary.copy()
     well_mask = input_img.well_props.mask.cropped
 
     return get_menisc(binary_img, well_mask)
