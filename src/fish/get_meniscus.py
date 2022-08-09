@@ -8,10 +8,10 @@ def get_meniscus_for_input_img(input_img: InputImage, corrected=False) -> np.nda
     binary_img = input_img.binary
     well_mask = input_img.well_props.mask.cropped
 
-    return get_meniscus(binary_img, well_mask)
+    return get_menisc(binary_img, well_mask)
 
 
-def get_meniscus(binary_img: np.ndarray, mask: np.ndarray, corrected=False) -> np.ndarray:
+def get_menisc(binary_img: np.ndarray, mask: np.ndarray, corrected=False) -> np.ndarray:
     if binary_img.shape != mask.shape:
         raise Exception("Arguments 'binary_img' and 'well_mask' must have equal shape" +
                         f"\n'binary_img': {binary_img.shape} != 'well_mask': {mask.shape}")
