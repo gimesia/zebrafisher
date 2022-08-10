@@ -4,6 +4,14 @@ from skimage.morphology import disk, dilation, erosion, area_opening
 from src.models.InputImage import InputImage
 
 
+def remove_meniscus(input_img: InputImage):
+    meniscus = get_meniscus(input_img)
+    without_meniscus = input_img.binary
+    without_meniscus[meniscus > 0] = 0  # Switching the pixels of the meniscus to 0
+    input_img.processed = without_meniscus
+    return input_img
+
+
 def get_meniscus(input_img: InputImage, corrected=False) -> np.ndarray:
     """
     Find the illumination caused by the meniscus effect from InputImage object.

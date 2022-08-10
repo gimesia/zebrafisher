@@ -6,7 +6,7 @@ from src.models import InputImage
 from src.terminal_msg import msg
 
 
-def sobel(img: np.ndarray) -> np.ndarray:
+def sobel(img: np.ndarray, equalized=True) -> np.ndarray:
     """
     Performs Sobel filtering on a 2D grayscale image
 
@@ -21,11 +21,13 @@ def sobel(img: np.ndarray) -> np.ndarray:
     abs_grad_y = cv.convertScaleAbs(grad_y)
 
     grad = cv.addWeighted(abs_grad_x, 0.5, abs_grad_y, 0.5, 0)
-    eq_grad = equalize_hist(grad)  # Equalizing values for better separation
-    return eq_grad
+    if equalized:
+        eq_grad = equalize_hist(grad)  # Equalizing values for better separation
+        return eq_grad
+    else:
+        return grad
 
 
 def sobel_edges(input_img: InputImage) -> InputImage:
-    msg("Finding edges with Sobel filtering")
     input_img.processed = sobel(input_img.processed)
     return input_img
