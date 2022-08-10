@@ -1,17 +1,16 @@
 import numpy as np
-import cv2 as cv
 from skimage.filters.thresholding import threshold_yen
-from skimage.morphology import disk, binary_dilation, binary_erosion, remove_small_holes, remove_small_objects, \
-    binary_opening, square
+from skimage.morphology import disk, binary_dilation, remove_small_holes, remove_small_objects
 
 from src.models import InputImage
-from src.terminal_msg import msg, show_img
+from src.terminal_msg import msg
 
 
 def remove_speckles(img: np.ndarray) -> np.ndarray:
     min_area = img.size * 0.01  # Should be minimum 1% of the picture
 
-    return remove_small_objects(remove_small_holes(img.astype(bool), min_area), min_area).astype(np.double) # np.double for openCV to be able to open it
+    return remove_small_objects(remove_small_holes(img.astype(bool), min_area), min_area).astype(
+        np.double)  # np.double for openCV to be able to open it
 
 
 def yen_th(img: np.ndarray) -> np.ndarray:

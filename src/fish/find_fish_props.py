@@ -1,8 +1,6 @@
 import numpy as np
-from scipy.signal import wiener
-from skimage.filters.thresholding import threshold_yen
-from skimage.morphology import disk, opening, remove_small_objects, remove_small_holes, binary_dilation
-import cv2 as cv
+from skimage.color import label2rgb
+from skimage.measure import find_contours
 
 from src.fish import *
 from src.models import InputImage, EXAMPLE_IMG
@@ -18,19 +16,22 @@ def find_fish_props(input_img: InputImage) -> InputImage:
 
     input_img = yen_thresholding(input_img)
 
-    meniscus = get_meniscus(input_img)
-    without_meniscus = input_img.binary
-    without_meniscus[meniscus > 0] = 0  # Switching the pixels of the meniscus to 0
-    input_img.processed = without_meniscus
+    input_img = remove_meniscus(input_img)
 
     input_img = convex_hull_for_fish(input_img)
-    show_img(input_img.fish_props.mask.masked.astype(float))
+    show_img(input_img.processed, 'proc')
+    show_img(input_img.fish_props.mask.og.astype(float), 'mask')
+    show_img(input_img.fish_props.mask.masked, 'masked')
 
-    # input_img = get_possible_fish(input_img)
+    if input_img.fish_props.mask.og.nonzero()[0].size > input_img.well_props.mask.cropped.nonzero()[0].size * 0.25:
+        Warning("FISH_MASK BIGGER THAN QUARTER OF THE WELL_MASK")
+        input_img = correct_fish_mask(input_img)
+    show_img(input_img.fish_props.mask.masked, 'masked')
+
     return input_img
 
 
 if __name__ == '__main__':
-    a = InputImage("zf4.jpg")
+    a = InputImage("zf2.jpg")
     a = find_well_props(a)
     a = find_fish_props(a)

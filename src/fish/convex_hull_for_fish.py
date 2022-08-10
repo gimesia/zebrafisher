@@ -1,24 +1,13 @@
 import numpy as np
 from skimage.measure import regionprops_table, label
-from skimage.morphology import remove_small_objects, convex_hull_image, binary_dilation, disk
+from skimage.morphology import remove_small_objects, convex_hull_image, binary_dilation, disk, binary_closing, \
+    area_closing
 
-from src.models import InputImage
-from src.terminal_msg import show_img
-
-
-def keep_largest_object(binary_img: np.ndarray) -> np.ndarray:
-    """
-    Removes all objects from an image but the largest one
-    :param binary_img: input image
-    :return: same image, with only the largest object area-wise
-    """
-    labeled = label(binary_img)
-    props = regionprops_table(binary_img.astype(int), properties=('area', 'label'))
-    max_area = props['area'].max()
-
-    removed = remove_small_objects(binary_img.astype(bool), max_area - 100).astype(int)
-
-    return removed
+from src.fish.get_objects import keep_largest_object
+from src.fish.correct_fish_mask import correct_fish_mask
+from src.models import InputImage, BoundingBox
+from src.terminal_msg import show_img, msg
+from src.well import get_bounding_box_coords
 
 
 def convex_hull_for_fish(input_img: InputImage) -> InputImage:
@@ -29,16 +18,25 @@ def convex_hull_for_fish(input_img: InputImage) -> InputImage:
     :param input_img:
     :return: InputImage object with mask for the fish
     """
+    msg("Getting convex hull for fish")
 
     hull = fish_convex_hull(input_img.processed)
-    input_img.fish_props.mask.og = hull
-    input_img.fish_props.mask.masked = hull * input_img.well_props.mask.cropped_masked
+    masked = hull * input_img.well_props.mask.cropped_masked
+    bbox = get_bounding_box_coords(hull)
 
+    input_img.fish_props.mask.og = hull.copy().astype(np.uint8)
+    input_img.fish_props.mask.masked = masked.copy().astype(np.uint8)
+    input_img.processed = masked.copy().astype(np.uint8)
+    input_img.fish_props.bounding_box = BoundingBox(bbox[0], bbox[1], bbox[2], bbox[3])
+
+    msg("Stored fish mask & bounding box")
     return input_img
 
 
 def fish_convex_hull(binary_img: np.ndarray) -> np.ndarray:
     one_object_img = keep_largest_object(binary_img)
+
     hull = convex_hull_image(one_object_img)
-    hull = binary_dilation(hull, disk(15))
-    return hull.astype(int)
+    hull = binary_dilation(hull, disk(20))
+
+    return hull.astype(np.uint8)
