@@ -3,7 +3,7 @@
 import numpy as np
 
 from src.models import InputImage
-from src.well.preProcessing.histc import histc
+from src.well.unused.histc import histc
 
 """
 get a mask for the structured pixels (dart regions (vessels and macula)

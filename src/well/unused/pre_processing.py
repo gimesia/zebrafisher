@@ -5,7 +5,7 @@ from skimage.morphology import disk
 
 from src.models import InputImage
 from src.terminal_msg import msg
-from src.well.preProcessing.illumination_correction import illumination_correction
+from src.well.unused.illumination_correction import illumination_correction
 
 
 def pre_processing(input_img: InputImage) -> InputImage:

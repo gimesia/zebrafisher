@@ -3,10 +3,10 @@ import numpy as np
 from src.models import InputImage, BoundingBox
 from src.terminal_msg import msg
 from src.well.create_circle_mask import create_circle_mask
-from src.well.getInnerRoi.get_inner_roi import get_inner_roi
+from src.well.unused.get_inner_roi import get_inner_roi
 from src.well.get_bounding_box_coords import get_bounding_box_coords
 from src.well.is_empty_img import is_empty_img
-from src.well.preProcessing.pre_processing import pre_processing
+from src.well.unused.pre_processing import pre_processing
 from src.well.well_hough_transform import well_hough_transformation
 
 

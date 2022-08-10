@@ -1,7 +1,7 @@
 from src.models import InputImage
-from src.well.preProcessing.get_mask_for_correction import get_mask_for_correction
-from src.well.preProcessing.local_contrast_enhancement import local_contrast_enhancement
-from src.well.preProcessing.robust_homomorphic_surface_fitting import robust_homomorphic_surface_fitting
+from src.well.unused.get_mask_for_correction import get_mask_for_correction
+from src.well.unused.local_contrast_enhancement import local_contrast_enhancement
+from src.well.unused.robust_homomorphic_surface_fitting import robust_homomorphic_surface_fitting
 
 
 def illumination_correction(input_img: InputImage) -> InputImage:
