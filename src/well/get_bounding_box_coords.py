@@ -1,17 +1,15 @@
 import numpy as np
-from skimage.measure import regionprops
+from skimage.measure import regionprops, label
 
-from src.models import EXAMPLE_IMG
+from src.models import EXAMPLE_IMG, BoundingBox
 from src.terminal_msg import msg
 
 
 def get_bounding_box_coords(img: np.ndarray) -> [int, int, int, int]:
-    msg("Getting bounding box of well")
     actual_height, actual_width = img.shape[0], img.shape[1]
 
-    # img.processed = bwareafilt(img.processed)
-
-    props = regionprops(img)
+    labeled = label(img.astype(np.uint8))
+    props = regionprops(labeled)
     [x1, y1, x2, y2] = props[0].bbox
 
     if actual_height <= y2:
@@ -21,6 +19,13 @@ def get_bounding_box_coords(img: np.ndarray) -> [int, int, int, int]:
         x2 = x2 - 1
 
     return [x1, y1, x2, y2]
+
+
+def get_bounding_box(img: np.ndarray) -> BoundingBox:
+    bbox = BoundingBox()
+    bbox.set(get_bounding_box_coords(img))
+
+    return bbox
 
 
 if __name__ == "__main__":

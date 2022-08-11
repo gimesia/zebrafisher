@@ -3,7 +3,7 @@ from skimage.filters.thresholding import threshold_yen
 from skimage.morphology import disk, binary_dilation, remove_small_holes, remove_small_objects
 
 from src.models import InputImage
-from src.terminal_msg import msg
+from src.terminal_msg import msg, show_img
 
 
 def remove_speckles(img: np.ndarray) -> np.ndarray:
@@ -33,13 +33,10 @@ def yen_thresholding(input_img: InputImage) -> InputImage:
     msg("Applying Yen-thresholding")
 
     th = yen_th(input_img.processed)
-
     th = remove_speckles(th)
-
     th = th * input_img.well_props.mask.cropped
-
-    input_img.binary = th
-    input_img.processed = th
+    input_img.binary = th.copy()
+    input_img.processed = th.copy()
     msg("Stored binary image in object")
 
     return input_img

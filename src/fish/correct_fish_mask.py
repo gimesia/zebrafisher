@@ -28,7 +28,7 @@ def correct_fish_mask(input_img: InputImage):
     region_props = regionprops(labeled)[max_index]
 
     new_bbox = region_props.bbox
-    print(f'{img.dtype} &{region_props.image_convex.dtype}')
+
     img[new_bbox[0]:new_bbox[2], new_bbox[1]: new_bbox[3]] = region_props.image_convex
     input_img.fish_props.mask.og = region_props.image_convex
     # input_img.fish_props.bounding_box = BoundingBox(new_bbox[0], new_bbox[1], new_bbox[2], new_bbox[3])

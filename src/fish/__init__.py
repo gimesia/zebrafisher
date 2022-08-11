@@ -7,3 +7,4 @@ from .convex_hull_for_fish import *
 from .post_fish_examination import *
 from .correct_fish_mask import *
 from .get_objects import *
+from .is_fish import *

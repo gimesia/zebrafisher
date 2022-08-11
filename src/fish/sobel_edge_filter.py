@@ -10,6 +10,7 @@ def sobel(img: np.ndarray, equalized=True) -> np.ndarray:
     """
     Performs Sobel filtering on a 2D grayscale image
 
+    :param equalized:
     :param img: input image
     :return: Sobel (edge) filtered image
     """
