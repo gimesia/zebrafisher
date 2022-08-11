@@ -61,6 +61,6 @@ def refine_fish_convex_mask(input_img: InputImage) -> InputImage:
 
 
 if __name__ == '__main__':
-    a = InputImage("zf2.jpg")
+    a = InputImage("zf3.jpg")
     a = find_well_props(a)
     a = find_fish_props(a)
