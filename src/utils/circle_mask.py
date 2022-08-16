@@ -15,9 +15,12 @@ def create_circle_mask(input_img: InputImage) -> InputImage:
     :return: Input image with 'well_props.mask.og'
     """
     msg("Creating mask for well")
-    center = input_img.well_props.center
-    radius = input_img.well_props.radius
-    size = (input_img.height, input_img.width)
+    try:
+        center = input_img.well_props.center
+        radius = input_img.well_props.radius
+        size = (input_img.height, input_img.width)
+    except():
+        raise Exception("Cannot make circle mask without required parameters! (center, radius, img size")
 
     input_img.well_props.mask.og = circle_mask(center, size, radius)
     return input_img

@@ -21,7 +21,7 @@ def convex_hull_for_fish(input_img: InputImage) -> InputImage:
     bbox = get_bounding_box(hull)
 
     input_img.fish_props.mask.og = hull.copy().astype(np.uint8)
-    input_img.binary = hull.copy().astype(np.uint8)
+    # input_img.binary = hull.copy().astype(np.uint8)
 
     input_img.fish_props.mask.masked = masked.copy().astype(np.uint8)
     input_img.processed = masked.copy().astype(np.uint8)

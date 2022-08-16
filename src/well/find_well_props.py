@@ -1,7 +1,8 @@
 import numpy as np
+from skimage.color import rgb2gray
 
 from src.models import InputImage
-from src.utils.terminal_msg import msg
+from src.utils.terminal_msg import msg, show_img
 from src.utils import create_circle_mask, is_empty_img, get_bounding_box_obj
 from src.well import well_hough_transformation
 
@@ -13,6 +14,12 @@ def find_well_props(input_img: InputImage) -> InputImage:
 
     input_img = create_circle_mask(input_img)
 
+    input_img = create_remaining_well_masks(input_img)
+
+    return input_img
+
+
+def create_remaining_well_masks(input_img: InputImage) -> InputImage:
     if is_empty_img(input_img.well_props.mask.og) or (input_img.well_props.mask is None):
         input_img.well_props.is_well = False
     else:
@@ -25,7 +32,7 @@ def find_well_props(input_img: InputImage) -> InputImage:
         input_img.well_props.mask.cropped = input_img.well_props.mask.og[bbox.x1:bbox.x2 + 1, bbox.y1:bbox.y2 + 1]
 
         # Applying mask to OG image
-        masked = input_img.well_props.mask.og.astype(np.uint8) * input_img.processed.astype(np.uint8)
+        masked = input_img.well_props.mask.og.astype(np.uint8) * rgb2gray(input_img.og.astype(np.uint8))
         # Storing masked images
         input_img.well_props.mask.masked = masked
         input_img.well_props.mask.cropped_masked = masked[bbox.x1:bbox.x2 + 1, bbox.y1:bbox.y2 + 1]

@@ -3,7 +3,7 @@ import numpy as np
 from src.filters import normalize_0_255
 from src.fish.find_fish_props import find_fish_props
 from src.models import InputImage
-from src.utils.terminal_msg import msg, show_img
+from src.utils.terminal_msg import msg, show_img, show_multiple_img
 from src.well.find_well_props import find_well_props
 
 
@@ -35,7 +35,11 @@ def image_processing_pipeline(filename: str) -> InputImage:
 
 
 if __name__ == '__main__':
-    res = image_processing_pipeline("zf1.jpg")
-    show_img(res.processed)
-    show_img(res.fish_props.mask.masked)
-    show_img(res.fish_props.mask.cropped)
+    _1 = image_processing_pipeline("zf1.jpg")
+    """_2 = image_processing_pipeline("zf2.jpg")
+    _3 = image_processing_pipeline("zf3.jpg")
+    _4 = image_processing_pipeline("zf4.jpg")
+    _5 = image_processing_pipeline("zf5.jpg")
+    _6 = image_processing_pipeline("zf6.jpg")"""
+    show_multiple_img(
+        [_1.fish_props.mask.cropped_masked]) # _2.fish_props.mask.cropped_masked, _3.fish_props.mask.cropped_masked, _4.fish_props.mask.cropped_masked, _5.fish_props.mask.cropped_masked, _6.fish_props.mask.cropped_masked])

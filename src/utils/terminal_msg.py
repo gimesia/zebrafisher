@@ -1,4 +1,4 @@
-import cv2 as cv
+import cv2
 import numpy as np
 
 
@@ -10,6 +10,17 @@ def msg(title: str, data: any = None):
 
 
 def show_img(image: np.ndarray, title="Image"):
-    cv.imshow(title, image)
-    cv.waitKey(0)
-    cv.destroyAllWindows()
+    cv2.imshow(title, image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+
+def show_multiple_img(images: list[np.ndarray]):
+    index = 0
+
+    for i in images:
+        cv2.imshow(str(index), i)
+        index += 1
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
