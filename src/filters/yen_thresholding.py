@@ -13,28 +13,34 @@ def remove_speckles(img: np.ndarray) -> np.ndarray:
 
 def yen_th(img: np.ndarray) -> np.ndarray:
     """
-    Runs a Yen-thresholding on given picture
+    Runs a Yen-thresholding on given image
+
     :param img: input image
     :return: Binary int picture
     """
     thresh = threshold_yen(img)
 
-    return (img > thresh).astype(np.double)  # np.double for openCV to be able to open it
+    return img > thresh
 
 
-def yen_thresholding(input_img: InputImage) -> InputImage:
+def yen_thresholding(input_img: InputImage, mask=None) -> InputImage:
     """
     Stores the binary image in the object
+
     :param input_img: InputImage
     :return: InputImage with new .binary attribute
     """
     msg("Applying Yen-thresholding")
 
+    if mask is None:
+        mask = input_img.well_props.mask.cropped
+
     th = yen_th(input_img.processed)
     th = remove_speckles(th)
-    th = th * input_img.well_props.mask.cropped
+    th = (th * mask).astype(float)
+
     input_img.binary = th.copy()
     input_img.processed = th.copy()
-    msg("Stored binary image in object")
 
+    msg("Stored binary image in object")
     return input_img

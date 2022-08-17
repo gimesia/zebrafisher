@@ -58,6 +58,7 @@ def well_hough_transformation(input_img: InputImage):
     cv.circle(c_image, (circle[0], circle[1]), 1, (0, 100, 255), 4)
     # input_img.processed = c_image
     """
+
     # Storing circle radius in input object
     input_img.well_props.radius = circle[2]
     # Storing circle center in input object

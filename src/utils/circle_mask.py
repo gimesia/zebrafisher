@@ -7,11 +7,12 @@ from src.utils.terminal_msg import msg
 from .circle_fit import hyper_fit
 
 
-def create_circle_mask(input_img: InputImage) -> InputImage:
+def create_circle_mask(input_img: InputImage, correction=0) -> InputImage:
     """
     Sets the OG (circle) mask for well
 
     :param input_img: Input image without 'well_props.mask.og'
+    :param correction: pixels subtracted from the radius
     :return: Input image with 'well_props.mask.og'
     """
     msg("Creating mask for well")
@@ -22,16 +23,17 @@ def create_circle_mask(input_img: InputImage) -> InputImage:
     except():
         raise Exception("Cannot make circle mask without required parameters! (center, radius, img size")
 
-    input_img.well_props.mask.og = circle_mask(center, size, radius)
+    input_img.well_props.mask.og = circle_mask(center, size, radius, correction)
     return input_img
 
 
-def circle_mask(center: tuple[int, int], size: tuple[int, int], radius: int) -> np.ndarray:
+def circle_mask(center: tuple[int, int], size: tuple[int, int], radius: int, correction=0) -> np.ndarray:
     """
 
     :param center: Center of the mask
     :param size: Size of the containing image
     :param radius: Radius of circle
+    :param correction: pixels subtracted from the radius
     :return: Circle masked image
     """
     x, y = center[0], center[1]
@@ -39,8 +41,10 @@ def circle_mask(center: tuple[int, int], size: tuple[int, int], radius: int) -> 
 
     theta = np.arange(0, 2 * pi + (pi / 50), pi / 50)
 
-    x_unit = radius * np.cos(theta) + x
-    y_unit = radius * np.sin(theta) + y
+    subtracted_radius = radius - correction
+
+    x_unit = subtracted_radius * np.cos(theta) + x
+    y_unit = subtracted_radius * np.sin(theta) + y
 
     # An array that has both x and y coords
     concatenated = np.dstack((x_unit, y_unit))[0]
@@ -58,6 +62,3 @@ def circle_mask(center: tuple[int, int], size: tuple[int, int], radius: int) -> 
 
     return mask
 
-
-if __name__ == "__main__":
-    pass

@@ -10,10 +10,12 @@ def is_fish(img: np.ndarray) -> bool:
     """
     labeled = label(img)
     reg_props = regionprops(labeled)
-    if reg_props[0].eccentricity > 0.9:  # 0.92
-        fish = True
-    else:
-        fish = False
-    #  TODO: more criteria!
+    print(reg_props)
+    if reg_props[0].eccentricity < 0.92:  # 0.92
+        print("Isn't eccentric enough")
+        return False
+    if reg_props[0].area > (img.size / 4):
+        print("Too big")
+        return False
 
-    return fish
+    return True

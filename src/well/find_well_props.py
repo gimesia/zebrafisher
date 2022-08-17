@@ -12,7 +12,7 @@ def find_well_props(input_img: InputImage) -> InputImage:
     # Finding well via Hough-transformation
     input_img = well_hough_transformation(input_img)
 
-    input_img = create_circle_mask(input_img)
+    input_img = create_circle_mask(input_img, correction=10)
 
     input_img = create_remaining_well_masks(input_img)
 

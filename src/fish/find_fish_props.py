@@ -1,9 +1,11 @@
 import numpy as np
+from scipy import ndimage
 from scipy.ndimage import binary_fill_holes
 from skimage.exposure import equalize_adapthist
 from skimage.filters.ridges import meijering
 from skimage.filters.thresholding import threshold_isodata
-from skimage.morphology import disk, binary_closing, binary_opening, convex_hull_image, binary_dilation, square
+from skimage.morphology import disk, binary_closing, binary_opening, convex_hull_image, binary_dilation, square, \
+    binary_erosion, remove_small_objects
 from skimage.restoration import rolling_ball
 
 from src.filters import sharpen_image, sobel_edges, yen_thresholding, sobel, yen_th, sharpen_img
@@ -12,26 +14,41 @@ from src.utils import get_bounding_box, keep_largest_object
 from src.utils.terminal_msg import msg, show_img
 from .convex_hull_for_fish import convex_hull_for_fish
 from .is_fish import is_fish
+from .remove_background import remove_background
 from .well_meniscus import remove_meniscus
 
 
 def find_fish_props(input_img: InputImage) -> InputImage:
     msg("Searching fish properties")
 
-    input_img = get_fish_convex_mask(input_img)
+    input_img = remove_background(input_img)
 
-    show_img(input_img.processed, "after")
+    input_img = yen_thresholding(input_img)
+    filled = binary_fill_holes(binary_closing(binary_fill_holes(input_img.processed), disk(10))).astype(float)
+    input_img.processed = filled * input_img.well_props.mask.cropped
 
-    input_img = refine_fish_convex_mask(input_img)
+    input_img.fish_props.mask.og = convex_hull_image(input_img.processed)  # Fish hull ready to be analyzed further
+
+    if not is_fish(input_img.fish_props.mask.og):
+        print("NOT FISH")
+        input_img = refine_oversized_hull(input_img)
+
+    # input_img = get_fish_convex_mask(input_img)
+    # input_img = refine_fish_convex_mask(input_img)
     # input_img = refine_fish_mask(input_img)
 
     return input_img
 
 
+def refine_oversized_hull(input_img: InputImage) -> InputImage:
+    return input_img
+
+
+"""
 def get_fish_convex_mask(input_img: InputImage) -> InputImage:
     msg("Creating fish convex mask")
     for i in range(6):
-        show_img(input_img.processed, "before")
+        # show_img(input_img.processed, "before")
         input_img = sharpen_image(input_img)
         input_img = sobel_edges(input_img)
         input_img = yen_thresholding(input_img)
@@ -40,9 +57,10 @@ def get_fish_convex_mask(input_img: InputImage) -> InputImage:
         if is_fish(input_img.binary):
             return input_img
 
-    """if input_img.fish_props.mask.og.nonzero()[0].size > input_img.well_props.mask.cropped.nonzero()[0].size * 0.25:
+
+    if input_img.fish_props.mask.og.nonzero()[0].size > input_img.well_props.mask.cropped.nonzero()[0].size * 0.25:
         Warning("FISH_MASK BIGGER THAN QUARTER OF THE WELL_MASK")
-        input_img = correct_fish_mask(input_img)"""
+        input_img = correct_fish_mask(input_img)
 
     return input_img
 
@@ -99,3 +117,4 @@ def refine_fish_mask(input_img: InputImage) -> InputImage:
     input_img.processed = masked
 
     return input_img
+"""
