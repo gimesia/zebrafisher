@@ -35,14 +35,6 @@ def image_processing_pipeline(filename: str) -> InputImage:
 
 
 if __name__ == '__main__':
-    _1 = image_processing_pipeline("zf1.jpg")
-    _2 = image_processing_pipeline("zf2.jpg")
-    """
-     _3 = image_processing_pipeline("zf3.jpg")
-    _4 = image_processing_pipeline("zf4.jpg")
-   
-    _5 = image_processing_pipeline("zf5.jpg")
-    _6 = image_processing_pipeline("zf6.jpg")"""
-    show_multiple_img(
-        [_1.processed, _2.processed])
-    # , _3.processed, _4.processed _5.fish_props.mask.cropped_masked, _6.fish_props.mask.cropped_masked])
+    _1 = image_processing_pipeline("zf5.jpg")
+    show_img(_1.processed, "END")
+    quit()
