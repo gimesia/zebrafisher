@@ -13,14 +13,14 @@ def keep_largest_object(binary_img: np.ndarray) -> np.ndarray:
     :return: same image, with only the largest object area-wise
     """
     msg("Finding largest object")
+    binary_img = binary_img.astype(bool)
 
     labeled = label(binary_img)
     props = regionprops_table(labeled.astype(int), properties=('area', 'label', 'image_filled', 'bbox'))
-
     if len(props) != 0:
         max_index = np.where(props['area'] == props['area'].max())[0]
-        x1, y1, x2, y2 = props['bbox-0'][max_index][0], props['bbox-1'][max_index][0], props['bbox-2'][max_index][0], \
-                         props['bbox-3'][max_index][0]
+        x1, y1, x2, y2 = props['bbox-0'][max_index][0], props['bbox-1'][max_index][0], \
+                         props['bbox-2'][max_index][0], props['bbox-3'][max_index][0]
 
         removed = np.zeros_like(binary_img)
         removed[x1:x2, y1:y2] = props['image_filled'][max_index][0]

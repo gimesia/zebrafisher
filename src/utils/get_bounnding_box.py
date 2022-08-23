@@ -9,6 +9,10 @@ def get_bounding_box(img: np.ndarray) -> [int, int, int, int]:
 
     labeled = label(img.astype(np.uint8))
     props = regionprops(labeled)
+
+    if len(props) == 0:
+        raise Exception("No object found")
+
     [x1, y1, x2, y2] = props[0].bbox
 
     if actual_height <= y2:

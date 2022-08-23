@@ -7,7 +7,13 @@ class FishProperties:
         self.mask: Mask = Mask()
 
         self.rotated: bool = False
-        self.container = None
-        self.mod_cont = None
-
         self.is_fish: bool = None
+
+        self.contours: Contours = Contours()
+
+
+class Contours:
+    def __init__(self):
+        self.body = None
+        self.spine = None
+        self.eyes = None

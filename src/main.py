@@ -35,6 +35,6 @@ def image_processing_pipeline(filename: str) -> InputImage:
 
 
 if __name__ == '__main__':
-    _1 = image_processing_pipeline("zf5.jpg")
-    show_img(_1.processed, "END")
+    _1 = image_processing_pipeline("zf3.jpg")
+    show_img(_1.fish_props.mask.cropped_masked, "END")
     quit()
