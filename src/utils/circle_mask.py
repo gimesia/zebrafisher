@@ -1,7 +1,8 @@
-import numpy as np
-
 # from circle_fit import hyper_fit
 from math import pi
+
+import numpy as np
+
 from src.models import InputImage
 from src.utils.terminal_msg import msg
 from .circle_fit import hyper_fit
@@ -15,7 +16,8 @@ def create_circle_mask(input_img: InputImage, correction=0) -> InputImage:
     :param correction: pixels subtracted from the radius
     :return: Input image with 'well_props.mask.og'
     """
-    msg("Creating mask for well")
+    msg("Creating circle mask for well")
+
     try:
         center = input_img.well_props.center
         radius = input_img.well_props.radius
@@ -24,11 +26,14 @@ def create_circle_mask(input_img: InputImage, correction=0) -> InputImage:
         raise Exception("Cannot make circle mask without required parameters! (center, radius, img size")
 
     input_img.well_props.mask.og = circle_mask(center, size, radius, correction)
+
+    msg("Circle mask for well created")
     return input_img
 
 
 def circle_mask(center: tuple[int, int], size: tuple[int, int], radius: int, correction=0) -> np.ndarray:
     """
+    Creates a circle of True values with given :param center, :param radius in a image with given :param size
 
     :param center: Center of the mask
     :param size: Size of the containing image
@@ -53,12 +58,5 @@ def circle_mask(center: tuple[int, int], size: tuple[int, int], radius: int, cor
 
     [x, y] = np.meshgrid(np.arange(-(x_fit - 1), (width - x_fit + 1)), np.arange(-(y_fit - 1), (height - y_fit + 1)))
 
-    mask = (np.power(x, 2) + np.power(y, 2) <= (r_fit ** 2)).astype(int)
-
-    """if mask.shape != size:
-        raise Exception(f"The mask and the image are not the same dimensions\n"
-                        f"Mask shape: {mask.shape}\n"
-                        f"OG shape: {size}")"""
-
-    return mask
-
+    mask = (np.power(x, 2) + np.power(y, 2) <= (r_fit ** 2))
+    return mask.astype(np.uint8)

@@ -11,11 +11,9 @@ def image_processing_pipeline(filename: str) -> InputImage:
     msg("Start image processing pipeline")
     input_img = InputImage(filename)
 
-    # Normalizing intensity
-    input_img.processed = normalize_0_255(input_img.processed)
-
-    # Converting back to unsigned integers Double -> UInt8
-    input_img.processed = np.uint8(input_img.processed)
+    input_img.processed = normalize_0_255(input_img.processed)  # Normalizing intensity
+    input_img.processed = input_img.processed.astype(np.uint8)  # Converting back to unsigned integers Double -> UInt8
+    input_img.og = input_img.processed  # Converting back to unsigned integers Double -> UInt8
 
     # Find well script
     input_img = find_well_props(input_img)
@@ -35,6 +33,7 @@ def image_processing_pipeline(filename: str) -> InputImage:
 
 
 if __name__ == '__main__':
-    _1 = image_processing_pipeline("zf3.jpg")
+    _1 = image_processing_pipeline("zf.czi")
     show_img(_1.fish_props.mask.cropped_masked, "END")
+    print(_1.fish_props.contours.body)
     quit()
