@@ -51,7 +51,7 @@ def refine_oversized_hull(input_img: InputImage, step=0) -> InputImage:
     hull = input_img.fish_props.mask.og
     well_masked = input_img.well_props.mask.cropped_masked
 
-    um = unsharp_mask(hull * well_masked, amount=20 + (step * 0.5), radius=2)
+    um = unsharp_mask(hull * well_masked, amount=10 + (step * 0.75), radius=2)
     meijered = meijering(um)
     th = yen_th(meijered)
     proc = th * hull
