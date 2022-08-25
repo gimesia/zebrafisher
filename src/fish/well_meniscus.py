@@ -36,7 +36,7 @@ def get_menisc(binary_img: np.ndarray, mask: np.ndarray, corrected=False) -> np.
                         f"\n'binary_img': {binary_img.shape} != 'well_mask': {mask.shape}")
 
     possible_well_size_th = np.zeros_like(binary_img)
-    remaining_binary_img = binary_img
+    remaining_binary_img = binary_img.copy()
 
     if not corrected:
         structuring_element = disk(21)
