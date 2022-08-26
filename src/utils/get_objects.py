@@ -13,7 +13,6 @@ def keep_largest_object(binary_img: np.ndarray) -> np.ndarray:
     :return: same image, with only the largest object area-wise
     """
     msg("Finding largest object")
-    binary_img = binary_img.astype(bool)
 
     labeled = label(binary_img)
     props = regionprops_table(labeled.astype(int), properties=('area', 'label', 'image', 'bbox'))
@@ -64,20 +63,14 @@ def keep_second_largest_object(binary_img):
     :param binary_img: input image
     :return: same image, with only the second to largest object area-wise
     """
-    binary_img = binary_img.astype(bool)
-
     labeled = label(binary_img)
     props = regionprops_table(labeled, properties=('area', 'label', 'image', 'bbox'))
 
-    if len(props) == 0:
-        print(Warning("No objects found"))
-        return binary_img
+    if len(props) < 2:
+        raise Exception(f"{len(props)} objects found")
 
     max_2_area = np.sort(props['area'])[-2:]
-
-    first = max_2_area[1]
     second = max_2_area[0]
-
     second_i = np.where((props['area'] == second))
 
     bbox_second = BoundingBox(props['bbox-0'][second_i][0], props['bbox-1'][second_i][0], props['bbox-2'][second_i][0],
@@ -95,14 +88,11 @@ def keep_2_largest_object(binary_img):
     :param binary_img: input image
     :return: same image, with only the 2 largest object area-wise
     """
-    binary_img = binary_img.astype(bool)
-
     labeled = label(binary_img)
     props = regionprops_table(labeled, properties=('area', 'label', 'image_filled', 'bbox'))
 
-    if len(props) == 0:
-        print(Warning("No objects found"))
-        return binary_img
+    if len(props) < 2:
+        raise Exception(f"{len(props)} objects found")
 
     max_2_area = np.sort(props['area'])[-2:]
 
