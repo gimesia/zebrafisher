@@ -45,10 +45,12 @@ def well_hough_transformation(input_img: InputImage):
         raise Exception("No well found!")
 
     """ FROM line 28-35 is for visual testing, will need to comment it out"""
+    """
     c_image = gray2rgb(image)  # Converting back to RGB to be able to put colorful indicators for center and line
     cv.circle(c_image, (circle[0], circle[1]), circle[2], (0, 255, 0), 2)  # draw the outer circle
     cv.circle(c_image, (circle[0], circle[1]), 1, (0, 100, 255), 4)  # draw the center
     show_img(c_image)
+    """
 
     input_img.well_props.radius = circle[2]  # Storing circle radius in input object
     input_img.well_props.center = (circle[0], circle[1])  # Storing circle center in input object
