@@ -16,7 +16,7 @@ def keep_largest_object(binary_img: np.ndarray) -> np.ndarray:
 
     labeled = label(binary_img)
     props = regionprops_table(labeled.astype(int), properties=('area', 'label', 'image', 'bbox'))
-    if len(props) != 0:
+    if len(props['area']) != 0:
         max_index = np.where(props['area'] == props['area'].max())[0]
         x1, y1, x2, y2 = props['bbox-0'][max_index][0], props['bbox-1'][max_index][0], \
                          props['bbox-2'][max_index][0], props['bbox-3'][max_index][0]
@@ -56,7 +56,7 @@ def keep_largest_object_convex(binary_img: np.ndarray) -> np.ndarray:
         return binary_img
 
 
-def keep_second_largest_object(binary_img):
+def keep_second_largest_object(binary_img: np.ndarray) -> np.ndarray:
     """
     Removes all objects from an image but the largest one
 
@@ -81,7 +81,7 @@ def keep_second_largest_object(binary_img):
     return removed
 
 
-def keep_2_largest_object(binary_img):
+def keep_2_largest_object(binary_img: np.ndarray) -> np.ndarray:
     """
     Removes all objects from an image but the largest one
 
@@ -95,6 +95,9 @@ def keep_2_largest_object(binary_img):
         raise Exception(f"{len(props)} objects found")
 
     max_2_area = np.sort(props['area'])[-2:]
+
+    if len(max_2_area) < 2:
+        return keep_largest_object(binary_img)
 
     first = max_2_area[1]
     second = max_2_area[0]
