@@ -5,6 +5,13 @@ from src.models import BoundingBox
 
 
 def get_bounding_box(img: np.ndarray) -> [int, int, int, int]:
+    """
+    Finds the bounding box of the first found object on an image
+    Notes: - advised to use, when only one object is present
+
+    :param img: input img
+    :return: bounding box coordinates [x1, y1, x2, y2]
+    """
     actual_height, actual_width = img.shape[0], img.shape[1]
 
     labeled = label(img.astype(np.uint8))
@@ -25,6 +32,13 @@ def get_bounding_box(img: np.ndarray) -> [int, int, int, int]:
 
 
 def get_bounding_box_obj(img: np.ndarray) -> BoundingBox:
+    """
+    Finds the bounding box of the first found object on an image
+    Notes: - advised to use, when only one object is present
+
+    :param img: input img
+    :return: bounding box object
+    """
     bbox = BoundingBox()
     bbox.set(get_bounding_box(img))
 

@@ -12,6 +12,7 @@ def remove_bg(img: np.ndarray, inverted=False) -> np.ndarray:
     Reduces the background intensity of an image
 
     :param img: input image
+    :param inverted:
     :return: image with background correction
     """
     if not inverted:
@@ -24,6 +25,13 @@ def remove_bg(img: np.ndarray, inverted=False) -> np.ndarray:
 
 
 def remove_background(input_img: InputImage, inverted=False) -> InputImage:
+    """
+    Performs remove_bg() on an input image object
+
+    :param input_img: input image object
+    :param inverted:
+    :return: input image object with removed background in .processed
+    """
     msg("Removing background")
     no_bg = remove_bg(input_img.processed)
     input_img.processed = no_bg  # equalize_hist(no_bg)

@@ -13,6 +13,12 @@ from .remove_background import remove_background
 
 
 def find_fish_props(input_img: InputImage) -> InputImage:
+    """
+    Finds the properties of the fish, then stores it in the input object
+
+    :param input_img: input image object
+    :return: input image object with 'fish_props'
+    """
     msg("Searching fish properties")
 
     input_img = remove_background(input_img)
@@ -47,6 +53,13 @@ def find_fish_props(input_img: InputImage) -> InputImage:
 
 
 def refine_oversized_hull(input_img: InputImage, step=0) -> InputImage:
+    """
+    Refines a big convex hull into a much closer fitting one
+
+    :param input_img:
+    :param step:
+    :return:
+    """
     msg(f"Refining convex hull of fish, step #{step}")
     hull = input_img.fish_props.mask.og
     well_masked = input_img.well_props.mask.cropped_masked
@@ -63,6 +76,11 @@ def refine_oversized_hull(input_img: InputImage, step=0) -> InputImage:
 
 
 def refine_fish_mask(input_img: InputImage) -> InputImage:
+    """
+    Refines the convex hull into a mask fitting to the outlines of the fish
+    :param input_img: input image object
+    :return: input image object with updated .fish_props
+    """
     msg("Refining fish mask")
     um = unsharp_mask(input_img.fish_props.mask.masked, amount=20, radius=3)
     sob = sobel(um)

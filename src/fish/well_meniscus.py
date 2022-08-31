@@ -5,8 +5,14 @@ from src.models.InputImage import InputImage
 
 
 def remove_meniscus(input_img: InputImage):
+    """
+    Removes meniscus from an image
+
+    :param input_img: input image object
+    :return: input image object with removed meniscus in .processed
+    """
     meniscus = get_meniscus(input_img)
-    without_meniscus = input_img.binary
+    without_meniscus = input_img.binary.copy()
     without_meniscus[meniscus > 0] = 0  # Switching the pixels of the meniscus to 0
     input_img.processed = without_meniscus
     return input_img
@@ -31,6 +37,14 @@ def get_meniscus(input_img: InputImage, corrected=False) -> np.ndarray:
 
 
 def get_menisc(binary_img: np.ndarray, mask: np.ndarray, corrected=False) -> np.ndarray:
+    """
+    Finds the well meniscus of an image with well
+
+    :param binary_img: binary image with meniscus
+    :param mask: mask of the well
+    :param corrected: indicates whether the image should be corrected
+    :return: binary image of the meniscus
+    """
     if binary_img.shape != mask.shape:
         raise Exception("Arguments 'binary_img' and 'well_mask' must have equal shape" +
                         f"\n'binary_img': {binary_img.shape} != 'well_mask': {mask.shape}")
@@ -65,6 +79,15 @@ def get_menisc(binary_img: np.ndarray, mask: np.ndarray, corrected=False) -> np.
 
 
 def get_mean_col_sum_for_structuring_element(data: np.ndarray, corner: str, corrected_step: bool = False):
+    """
+    IDFK?!
+
+    :param data:
+    :param corner:
+    :param corrected_step:
+    :return:
+    """
+
     thresh_well = np.zeros_like(data.shape)
 
     col_sum = np.sum(data[-1:1])  # in matlab ->   data'

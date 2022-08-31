@@ -7,6 +7,11 @@ from src.utils.terminal_msg import msg
 
 
 def remove_speckles(img: np.ndarray) -> np.ndarray:
+    """
+    Removes holes & object smaller than 1% of the original image
+    :param img:
+    :return:
+    """
     min_area = img.size * 0.01  # Should be minimum 1% of the picture
     return remove_small_objects(remove_small_holes(img.astype(bool), min_area), min_area)
 

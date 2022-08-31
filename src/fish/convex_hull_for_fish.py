@@ -33,6 +33,12 @@ def convex_hull_for_fish(input_img: InputImage) -> InputImage:
 
 
 def fish_convex_hull(binary_img: np.ndarray) -> np.ndarray:
+    """
+    Returns the convex hull of the object of a binary image
+
+    :param binary_img: input image
+    :return: image of convex hull
+    """
     one_object_img = keep_largest_object(binary_img)
 
     hull = convex_hull_image(one_object_img)

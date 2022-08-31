@@ -121,6 +121,7 @@ def keep_2_largest_object(binary_img: np.ndarray) -> np.ndarray:
 def get_filled_object(binary_img: np.ndarray) -> np.ndarray:
     """
     Removes all objects from an image but the largest one
+
     :param binary_img: input image
     :return: same image, with only the largest object area-wise
     """

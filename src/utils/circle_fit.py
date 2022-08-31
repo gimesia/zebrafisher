@@ -1,3 +1,8 @@
+"""
+Nem az enyém, kéne rá creditet adni
+"""
+
+
 import numpy as np
 from scipy import optimize
 from matplotlib import pyplot as plt, cm, colors

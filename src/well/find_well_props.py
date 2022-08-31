@@ -7,6 +7,12 @@ from src.well import well_hough_transformation
 
 
 def find_well_props(input_img: InputImage) -> InputImage:
+    """
+    Finds the properties of the well, then stores it in the input object
+
+    :param input_img: input image object
+    :return: input image object with 'well_props'
+    """
     msg("Searching for well properties")
 
     input_img = well_hough_transformation(input_img)
@@ -20,6 +26,12 @@ def find_well_props(input_img: InputImage) -> InputImage:
 
 
 def create_remaining_well_masks(input_img: InputImage) -> InputImage:
+    """
+     Creates masks of the well, stores it in the input object
+
+    :param input_img: input image object
+    :return: input image object with 'well_props.mask'
+    """
     if is_empty_img(input_img.well_props.mask.og) or (input_img.well_props.mask is None):
         input_img.well_props.is_well = False
     else:

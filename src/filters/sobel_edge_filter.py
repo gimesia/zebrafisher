@@ -29,5 +29,11 @@ def sobel(img: np.ndarray, equalized=True) -> np.ndarray:
 
 
 def sobel_edges(input_img: InputImage) -> InputImage:
+    """
+    Performs sobel() on an input image object
+
+    :param input_img: input image object
+    :return:  input image with Sobel-edge filtered .processed
+    """
     input_img.processed = sobel(input_img.processed)
     return input_img

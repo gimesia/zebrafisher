@@ -7,6 +7,12 @@ from src.utils.terminal_msg import msg, show_img
 
 
 def get_circle_limits(input_img: InputImage) -> [int, int]:
+    """
+    Calculates the minimum & maximum estimated values for the well
+
+    :param input_img: input image object to calculate from
+    :return: min & max parameter
+    """
     if input_img.height >= input_img.width:
         min_circle = 0 if (input_img.height - 400) < 0 else input_img.height - 400
         max_circle = input_img.height

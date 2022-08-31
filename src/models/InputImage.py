@@ -21,8 +21,10 @@ class InputImage:
             self.processed: np.ndarray = self.og
 
         self.binary: np.ndarray = np.zeros_like(self.processed)
+
         self.height: int = 0
         self.width: int = 0
+
         self.well_props: WellProperties = WellProperties()
         self.fish_props: FishProperties = FishProperties()
 
