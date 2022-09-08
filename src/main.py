@@ -33,7 +33,7 @@ def image_processing_pipeline(filename: str) -> InputImage:
 
 
 if __name__ == '__main__':
-    _1 = image_processing_pipeline("zf.czi")
+    _1 = image_processing_pipeline("zf1.jpg")
     show_img(_1.fish_props.mask.cropped_masked, "END")
     print(_1.fish_props.contours.body)
     quit()
