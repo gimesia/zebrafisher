@@ -23,6 +23,7 @@ def create_circle_mask(input_img: InputImage, correction=0) -> InputImage:
         radius = input_img.well_props.radius
         size = (input_img.height, input_img.width)
     except():
+        print(f"center: {center}, radius: {radius}, img size: {size}")
         raise Exception("Cannot make circle mask without required parameters! (center, radius, img size")
 
     input_img.well_props.mask.og = circle_mask(center, size, radius, correction)

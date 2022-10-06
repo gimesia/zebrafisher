@@ -23,25 +23,31 @@ def get_circle_limits(input_img: InputImage) -> [int, int]:
     return [min_circle, max_circle]
 
 
+def hough_transformation(img: np.ndarray, min_r: int, max_r: int, draw_circle=False):
+    image = cv.medianBlur(img, 3)  # Apply blur
+
+    # Use Hough transform (might have to change params)
+    circles = cv.HoughCircles(image, cv.HOUGH_GRADIENT, 0.99, 100, param1=50, param2=30,
+                              minRadius=int(min_r / 2),
+                              maxRadius=int(max_r / 2))
+
+    if len(circles) == 0:
+        print("No circles found!")
+    return circles
+
+
 def well_hough_transformation(input_img: InputImage):
     """
-    Searches for a circle for in the InputImage.processed image
+    Searches for a circle for in the 'InputImage.processed' image
 
     :param input_img: input image
     :return: the same input image with .well_props.center & .well_props.radius attributes
     """
     msg("Hough-transformation for the well")
-    image = input_img.processed.astype(np.uint8)
 
     [min_circle, max_circle] = get_circle_limits(input_img)
 
-    image = cv.medianBlur(image, 3)  # Apply blur
-
-    # Use Hough transform (might have to change params)
-    circles = cv.HoughCircles(image, cv.HOUGH_GRADIENT, 0.99, 100, param1=50, param2=30,
-                              minRadius=int(min_circle / 2),
-                              maxRadius=int(max_circle / 2))
-
+    circles = hough_transformation(input_img.processed, min_circle, max_circle)
     circles = np.uint16(np.around(circles))  # Rounding values for int16
 
     # Selecting first circle
