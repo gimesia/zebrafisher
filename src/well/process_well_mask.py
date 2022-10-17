@@ -12,7 +12,7 @@ def process_well_mask(input_img: InputImage) -> InputImage:
     :return: input image object with 'well_props.mask'
     """
 
-    input_img = create_circle_mask(input_img, correction=10)
+    input_img = create_circle_mask(input_img)
 
     if is_empty_img(input_img.well_props.mask.og) or (input_img.well_props.mask is None):
         input_img.well_props.is_well = False
@@ -35,7 +35,6 @@ def process_well_mask(input_img: InputImage) -> InputImage:
         msg("Creating masked image (cropped)")
         input_img.well_props.mask.cropped_masked = masked[bbox.x1:bbox.x2 + 1, bbox.y1:bbox.y2 + 1]
 
-        input_img.processed = input_img.well_props.mask.cropped_masked.copy()
-
+        input_img.processed = input_img.processed[bbox.x1:bbox.x2 + 1, bbox.y1:bbox.y2 + 1]
     msg("Created remaining masks")
     return input_img
