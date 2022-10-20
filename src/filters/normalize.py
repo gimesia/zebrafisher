@@ -9,7 +9,7 @@ def normalize_0_1(img: np.ndarray) -> np.ndarray:
     :param img: input image
     :return: normalized image
     """
-    return normalize(src=img, dst=None, alpha=0, beta=1, norm_type=NORM_MINMAX, dtype=float)
+    return normalize(src=img, dst=None, alpha=0, beta=1, norm_type=NORM_MINMAX).astype(float)
 
 
 def normalize_0_255(img: np.ndarray) -> np.ndarray:
@@ -19,4 +19,4 @@ def normalize_0_255(img: np.ndarray) -> np.ndarray:
     :param img: input image
     :return: normalized image
     """
-    return normalize(src=img, dst=None, alpha=0, beta=255, norm_type=NORM_MINMAX, dtype=np.uint8)
+    return normalize(src=img, dst=None, alpha=0, beta=255, norm_type=NORM_MINMAX).astype(np.uint8)
