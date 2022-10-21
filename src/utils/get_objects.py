@@ -109,10 +109,11 @@ def keep_2_largest_object(binary_img: np.ndarray) -> np.ndarray:
                               props['bbox-3'][second_i][0])
 
     removed = np.zeros_like(binary_img, dtype=np.uint8)
-    removed[bbox_second.x1:bbox_second.x2, bbox_second.y1:bbox_second.y2] = props['image'][second_i][0]
-    removed[bbox_first.x1:bbox_first.x2, bbox_first.y1:bbox_first.y2] = removed[bbox_first.x1:bbox_first.x2,
-                                                                        bbox_first.y1:bbox_first.y2] + \
-                                                                        props['image'][first_i][0]
+    removed[bbox_second.x1:bbox_second.x2, bbox_second.y1:bbox_second.y2] = \
+        props['image'][second_i][0]
+
+    removed[bbox_first.x1:bbox_first.x2, bbox_first.y1:bbox_first.y2] = \
+        removed[bbox_first.x1:bbox_first.x2, bbox_first.y1:bbox_first.y2] + props['image'][first_i][0]
     return removed
 
 
@@ -124,10 +125,10 @@ def get_filled_object(binary_img: np.ndarray) -> np.ndarray:
     :return: same image, with only the largest object area-wise
     """
     labeled = label(binary_img)
-    props = regionprops_table(labeled.astype(int), properties=('label', 'image_convex'))
+    props = regionprops_table(labeled.astype(int), properties=('label', 'image_filled'))
 
     if len(props['label']) == 1:
-        return props['image_convex'][0]
+        return props['image_filled'][0]
     else:
         msg(f"More than one object {len(props['label'])}")
         return binary_img

@@ -35,7 +35,7 @@ def find_fish_props(input_img: InputImage) -> InputImage:
 
     input_img.processed = denoising(input_img.processed)  # denoise
 
-    input_img.processed = adaptiveTh(input_img.processed, block_size=3)  # adaptive thresholding
+    input_img.processed = adaptiveTh(input_img.processed, block_size=5)  # adaptive thresholding
 
     # Get possible fish
     input_img.processed = area_open(input_img.processed, 100).astype(bool)  # area_opening

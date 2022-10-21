@@ -1,7 +1,7 @@
 import numpy as np
 
 from src.filters import normalize_0_255
-from src.fish.find_fish_props import find_fish_props
+from src.fish import find_fish_props
 from src.models import InputImage
 from src.utils.terminal_msg import msg, show_img, show_multiple_img
 from src.well.find_well_props import find_well_props
@@ -10,10 +10,7 @@ from src.well.find_well_props import find_well_props
 def image_processing_pipeline(filename: str) -> InputImage:
     msg("Start image processing pipeline")
     input_img = InputImage(filename)
-
     input_img.processed = normalize_0_255(input_img.processed)  # Normalizing intensity
-    input_img.processed = input_img.processed.astype(np.uint8)  # Converting back to unsigned integers Double -> UInt8
-    input_img.og = input_img.processed  # Converting back to unsigned integers Double -> UInt8
 
     # Find well script
     input_img = find_well_props(input_img)
@@ -33,7 +30,6 @@ def image_processing_pipeline(filename: str) -> InputImage:
 
 
 if __name__ == '__main__':
-    _1 = image_processing_pipeline("zf1.jpg")
-    show_img(_1.fish_props.mask.cropped_masked, "END")
-    print(_1.fish_props.contours.body)
-    quit()
+    _1 = image_processing_pipeline("zf8.jpg")
+    show_img(_1.processed.astype(float))
+    print('fin')
