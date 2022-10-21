@@ -18,5 +18,4 @@ def find_well_props(input_img: InputImage) -> InputImage:
 
     input_img = process_well_mask(input_img)
 
-    msg("Finished searching for well properties")
     return input_img

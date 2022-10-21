@@ -20,8 +20,6 @@ class InputImage:
             self.og: np.ndarray = cv.imread(path, 0)  # Already processes it to gray
             self.processed: np.ndarray = self.og
 
-        self.binary: np.ndarray = np.zeros_like(self.processed)
-
         self.height: int = 0
         self.width: int = 0
 
@@ -36,9 +34,6 @@ class InputImage:
     def _set_size(self):
         self.height = self.og.shape[0]
         self.width = self.og.shape[1]
-
-    def size(self) -> tuple[int, int]:
-        return self.height, self.width
 
 
 EXAMPLE_IMG = InputImage("zf1.jpg")
