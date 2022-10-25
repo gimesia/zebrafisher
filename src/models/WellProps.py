@@ -9,4 +9,4 @@ class WellProperties:
         self.bounding_box: BoundingBox = BoundingBox()
         self.mask: Mask = Mask()
 
-        self.is_well: bool = False
+        self.has_well: bool = False

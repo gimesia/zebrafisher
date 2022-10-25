@@ -15,9 +15,9 @@ def process_well_mask(input_img: InputImage) -> InputImage:
     input_img = create_circle_mask(input_img)
 
     if is_empty_img(input_img.well_props.mask.og) or (input_img.well_props.mask is None):
-        input_img.well_props.is_well = False
+        input_img.well_props.has_well = False
     else:
-        input_img.well_props.is_well = True
+        input_img.well_props.has_well = True
 
         msg("Creating remaining masks:")
 

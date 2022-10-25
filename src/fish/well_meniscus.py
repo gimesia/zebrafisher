@@ -4,7 +4,7 @@ from skimage.morphology import disk, dilation, erosion, area_opening
 from src.models.InputImage import InputImage
 
 
-def get_perim(bin_img: np.ndarray) -> np.ndarray:
+def get_perimeter(bin_img: np.ndarray) -> np.ndarray:
     bw = bin_img
     se = disk(5)
     bw_erode = erosion(bw, se)
@@ -28,7 +28,7 @@ def get_meniscus(binary_img: np.ndarray, mask: np.ndarray, corrected=False) -> n
     rt = remaining_binary_img[0:ch, cw:mw]
     rb = remaining_binary_img[ch:mh, cw:mw]
 
-    cont = get_perim(mask)
+    cont = get_perimeter(mask)
 
     lt_thresh = mean_4_col_sum(lt, "lt", cont)
     lb_thresh = mean_4_col_sum(lb, "lb", cont)
@@ -68,17 +68,3 @@ def mean_4_col_sum(data: np.ndarray, corner: str, cont: np.ndarray):
         elif corner == 'rb':
             thresh_well = dilation(cont[ch:mh, cw:mw], se)
     return thresh_well
-
-
-def remove_meniscus(input_img: InputImage):
-    """
-    Removes meniscus from an image
-
-    :param input_img: input image object
-    :return: input image object with removed meniscus in .processed
-    """
-    meniscus = get_meniscus(input_img)
-    without_meniscus = input_img.binary.copy()
-    without_meniscus[meniscus > 0] = 0  # Switching the pixels of the meniscus to 0
-    input_img.processed = without_meniscus
-    return input_img

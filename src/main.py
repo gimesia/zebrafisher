@@ -14,17 +14,17 @@ def image_processing_pipeline(filename: str) -> InputImage:
 
     # Find well script
     input_img = find_well_props(input_img)
-    if input_img.well_props.is_well:
+    if input_img.well_props.has_well:
         msg("FOUND WELL!")
     else:
-        Warning("No well was found!")
+        raise Exception("No well was found!")
 
     # Find fish script
     input_img = find_fish_props(input_img)
-    if input_img.fish_props.is_fish:
+    if input_img.fish_props.has_fish:
         msg("FOUND FISH!")
     else:
-        Warning("No fish was found!")
+        raise Exception("No fish was found!")
 
     return input_img
 
