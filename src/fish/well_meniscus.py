@@ -1,8 +1,6 @@
 import numpy as np
 from skimage.morphology import disk, dilation, erosion, area_opening
 
-from src.models.InputImage import InputImage
-
 
 def get_perimeter(bin_img: np.ndarray) -> np.ndarray:
     bw = bin_img

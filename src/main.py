@@ -24,12 +24,12 @@ def image_processing_pipeline(filename: str) -> InputImage:
     if input_img.fish_props.has_fish:
         msg("FOUND FISH!")
     else:
-        raise Exception("No fish was found!")
+        pass
+    #   raise Exception("No fish was found!")
 
     return input_img
 
 
 if __name__ == '__main__':
-    _1 = image_processing_pipeline("zf8.jpg")
-    show_img(_1.processed.astype(float))
+    _1 = image_processing_pipeline("zf3.jpg")
     print('fin')

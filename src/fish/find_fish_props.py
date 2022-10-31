@@ -1,43 +1,49 @@
 import cv2
 import numpy as np
-from skimage.exposure import equalize_adapthist
-from skimage.filters.edges import sobel
-from skimage.morphology import area_opening
+from PIL import ImageFilter, Image
+from scipy.signal import wiener
+from skimage.exposure import equalize_adapthist, rescale_intensity
+from skimage.morphology import area_opening, binary_closing, disk
 
 from src.filters import normalize_0_255
 from src.models import InputImage
-from src.utils.terminal_msg import show_img, msg
-
-
-def edge_finding(img: np.ndarray, mask=None) -> np.ndarray:  # Function replacing edge filter
-    edges = sobel(img, mask)  # range-filter
-    edges = equalize_adapthist(edges)
-    return normalize_0_255(edges)  # stretch contrast
-
-
-def denoising(img: np.ndarray, strength=20) -> np.ndarray:
-    return cv2.fastNlMeansDenoising(img, None, strength)  # denoise
-    # return wiener(img, (30,30))
+from src.utils.terminal_msg import msg, show_img
+from .rangefilter import range_filter
+from .remove_container import get_meniscus_effect
+from ..utils import keep_largest_object
 
 
 def adaptiveTh(img: np.ndarray, block_size=7) -> np.ndarray:
     return cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, block_size, 1)
 
 
-def area_open(img: np.ndarray, th=500):
-    return area_opening(img, area_threshold=th)
-
-
 def find_fish_props(input_img: InputImage) -> InputImage:
     msg("Searching for fish properties")
 
-    input_img.processed = edge_finding(input_img.processed, input_img.well_props.mask.cropped)  # rangefilter
+    msg("Applying range-filter")
+    rngfilter = range_filter(input_img.processed, input_img.well_props.mask.cropped)  # rangefilter
+    normalized = cv2.normalize(rngfilter, None, 0, 255, cv2.NORM_MINMAX)
+    normalized = equalize_adapthist(normalized)
 
-    input_img.processed = denoising(input_img.processed)  # denoise
+    msg("Applying wiener-filter")
+    input_img.processed = wiener(normalized, mysize=30)  # denoising with wiener filter
+    norm = normalize_0_255(input_img.processed)
 
-    input_img.processed = adaptiveTh(input_img.processed, block_size=5)  # adaptive thresholding
+    msg("Applying adaptive-threshold")
+    binary_img = adaptiveTh(norm, block_size=7)  # adaptive thresholding
 
     # Get possible fish
-    input_img.processed = area_open(input_img.processed, 100).astype(bool)  # area_opening
+    binary_img = area_opening(binary_img, 100).astype(float)  # area_opening
+    binary_img = binary_closing(binary_img, disk(3)).astype(float)  # area_opening
 
+    msg("Removing meniscus")
+    meniscus = get_meniscus_effect(binary_img, input_img.well_props.mask.cropped).astype(float)
+    binary_img = binary_img - meniscus
+    input_img.processed = keep_largest_object(binary_img, filled=True)
+
+    image = Image.fromarray(input_img.processed)
+    image = image.filter(ImageFilter.ModeFilter(size=13))
+    input_img.processed = image.__array__()
+
+    show_img(input_img.processed)
     return input_img

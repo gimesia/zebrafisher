@@ -57,7 +57,7 @@ def keep_second_largest_object(binary_img: np.ndarray, filled=False) -> np.ndarr
     Removes all objects from an image but the largest one
 
     :param binary_img: input image
-    :return: same image, with only the second to largest object area-wise
+    :return: same image, with only the second largest object area-wise
     """
     labeled = label(binary_img)
     props = ('area', 'label', 'image', 'bbox') if not filled else ('area', 'label', 'image_filled', 'bbox')
@@ -73,13 +73,14 @@ def keep_second_largest_object(binary_img: np.ndarray, filled=False) -> np.ndarr
     bbox_second = BoundingBox(props['bbox-0'][second_i][0], props['bbox-1'][second_i][0], props['bbox-2'][second_i][0],
                               props['bbox-3'][second_i][0])
 
+    index = 'image_filled' if filled else 'image'
     removed = np.zeros_like(binary_img, dtype=np.uint8)
     removed[bbox_second.x1:bbox_second.x2, bbox_second.y1:bbox_second.y2] = \
-        props['image'][second_i][0] if not filled else  props['image_filled'][second_i][0]
+        props[index][second_i][0]
     return removed
 
 
-def keep_2_largest_object(binary_img: np.ndarray) -> np.ndarray:
+def keep_2_largest_object(binary_img: np.ndarray, filled=False) -> np.ndarray:
     """
     Removes all objects from an image but the largest one
 
@@ -87,7 +88,7 @@ def keep_2_largest_object(binary_img: np.ndarray) -> np.ndarray:
     :return: same image, with only the 2 largest object area-wise
     """
     labeled = label(binary_img)
-    props = regionprops_table(labeled, properties=('area', 'label', 'image', 'bbox'))
+    props = regionprops_table(labeled, properties=('area', 'label', 'image', 'image_filled', 'bbox'))
 
     if len(props) < 2:
         raise Exception(f"{len(props)} objects found")
@@ -108,12 +109,13 @@ def keep_2_largest_object(binary_img: np.ndarray) -> np.ndarray:
     bbox_second = BoundingBox(props['bbox-0'][second_i][0], props['bbox-1'][second_i][0], props['bbox-2'][second_i][0],
                               props['bbox-3'][second_i][0])
 
+    index = 'image_filled' if filled else 'image'
     removed = np.zeros_like(binary_img, dtype=np.uint8)
     removed[bbox_second.x1:bbox_second.x2, bbox_second.y1:bbox_second.y2] = \
-        props['image'][second_i][0]
+        props[index][second_i][0]
 
     removed[bbox_first.x1:bbox_first.x2, bbox_first.y1:bbox_first.y2] = \
-        removed[bbox_first.x1:bbox_first.x2, bbox_first.y1:bbox_first.y2] + props['image'][first_i][0]
+        removed[bbox_first.x1:bbox_first.x2, bbox_first.y1:bbox_first.y2] + props[index][first_i][0]
     return removed
 
 
