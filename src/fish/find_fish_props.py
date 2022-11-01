@@ -3,9 +3,9 @@ import numpy as np
 from PIL import ImageFilter, Image
 from scipy.signal import wiener
 from skimage.exposure import equalize_adapthist, rescale_intensity
-from skimage.morphology import area_opening, binary_closing, disk
+from skimage.morphology import area_opening, binary_closing, disk, binary_dilation, square
 
-from src.filters import normalize_0_255
+from src.filters import normalize_0_255, yen_th, iso_th
 from src.models import InputImage
 from src.utils.terminal_msg import msg, show_img
 from .rangefilter import range_filter
@@ -30,20 +30,24 @@ def find_fish_props(input_img: InputImage) -> InputImage:
     norm = normalize_0_255(input_img.processed)
 
     msg("Applying adaptive-threshold")
-    binary_img = adaptiveTh(norm, block_size=7)  # adaptive thresholding
+    binary_img = yen_th(norm)  # adaptiveTh(norm, block_size=7)  # adaptive thresholding
+    show_img(binary_img, 'th')
 
     # Get possible fish
-    binary_img = area_opening(binary_img, 100).astype(float)  # area_opening
-    binary_img = binary_closing(binary_img, disk(3)).astype(float)  # area_opening
+    binary_img = binary_closing(binary_img, disk(3))
+    show_img(binary_img, 'closing')
+    binary_img = area_opening(binary_img, 100).astype(bool)  # area_opening
+    show_img(binary_img, 'opening')
 
     msg("Removing meniscus")
     meniscus = get_meniscus_effect(binary_img, input_img.well_props.mask.cropped).astype(float)
     binary_img = binary_img - meniscus
-    input_img.processed = keep_largest_object(binary_img, filled=True)
+    show_img(binary_img, 'menisc')
 
-    image = Image.fromarray(input_img.processed)
-    image = image.filter(ImageFilter.ModeFilter(size=13))
-    input_img.processed = image.__array__()
+    binary_img = keep_largest_object(binary_img, filled=True)
 
-    show_img(input_img.processed)
+    input_img.processed = binary_img
+    show_img(binary_img)
+    a = binary_dilation(binary_img, square(10))
+    show_img(binary_img * input_img.well_props.mask.cropped_masked)
     return input_img

@@ -10,6 +10,8 @@ def msg(title: str, data: any = None):
 
 
 def show_img(image: np.ndarray, title="Image"):
+    if image.dtype == 'bool':
+        image = image.astype(float)
     cv2.imshow(title, image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
