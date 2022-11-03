@@ -1,5 +1,5 @@
 import numpy as np
-from skimage.filters.thresholding import threshold_yen
+from skimage.filters.thresholding import threshold_yen, threshold_isodata
 from skimage.morphology import remove_small_holes, remove_small_objects
 
 from src.models import InputImage
@@ -18,12 +18,24 @@ def remove_speckles(img: np.ndarray) -> np.ndarray:
 
 def yen_th(img: np.ndarray) -> np.ndarray:
     """
-    Runs a Yen-thresholding on given image
+    Runs Yen-thresholding on given image
 
     :param img: input image
     :return: Binary int picture
     """
     thresh = threshold_yen(img)
+
+    return img > thresh
+
+
+def iso_th(img: np.ndarray) -> np.ndarray:
+    """
+    Runs Isodata-thresholding on given image
+
+    :param img: input image
+    :return: Binary int picture
+    """
+    thresh = threshold_isodata(img)
 
     return img > thresh
 

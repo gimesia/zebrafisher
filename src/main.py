@@ -31,5 +31,12 @@ def image_processing_pipeline(filename: str) -> InputImage:
 
 
 if __name__ == '__main__':
+    #_1 = image_processing_pipeline("zf1.jpg")
+    #_1 = image_processing_pipeline("zf2.jpg")
+    #_1 = image_processing_pipeline("zf3.jpg")
+    #_1 = image_processing_pipeline("zf4.jpg")
+    #_1 = image_processing_pipeline("zf5.jpg")
+    #_1 = image_processing_pipeline("zf6.jpg")
+    #_1 = image_processing_pipeline("zf7.jpg")
     _1 = image_processing_pipeline("zf8.jpg")
     print('fin')
