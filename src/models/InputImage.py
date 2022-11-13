@@ -11,7 +11,7 @@ class InputImage:
         import os
 
         path = os.path.dirname(__file__)  # r'src/images'  # NEED TO BE CHANGED IF RAN FROM ANOTHER COMPUTER
-        path = path + "\\images\\" + filename
+        path = path + "\\images\\in\\" + filename
 
         if filename.split(".")[1] == "czi":
             self.og: np.ndarray = czifile.imread(path)[0, :, :, 0]

@@ -3,7 +3,8 @@ from src.models import BoundingBox, Mask
 
 class FishProperties:
     def __init__(self):
-        self.bounding_box: BoundingBox = BoundingBox()
+        self.bounding_box_og: BoundingBox = BoundingBox()
+        self.bounding_box_well: BoundingBox = BoundingBox()
         self.mask: Mask = Mask()
 
         self.rotated: bool = False
