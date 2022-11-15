@@ -1,3 +1,7 @@
+"""
+THIS FILE IS UNUSED! Improved version: remove_container.py
+"""
+
 import numpy as np
 from skimage.morphology import disk, dilation, erosion, area_opening
 
