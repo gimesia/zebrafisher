@@ -57,7 +57,7 @@ def keep_second_largest_object(binary_img: np.ndarray, filled=False) -> np.ndarr
     Removes all objects from an image but the largest one
 
     :param binary_img: input image
-    :return: same image, with only the second largest object area-wise
+    :return: same image, with only the second-largest object area-wise
     """
     labeled = label(binary_img)
     props = ('area', 'label', 'image', 'bbox') if not filled else ('area', 'label', 'image_filled', 'bbox')

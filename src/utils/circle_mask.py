@@ -34,7 +34,7 @@ def create_circle_mask(input_img: InputImage, correction=0) -> InputImage:
 
 def circle_mask(center: tuple[int, int], size: tuple[int, int], radius: int, correction=0) -> np.ndarray:
     """
-    Creates a circle of True values with given :param center, :param radius in a image with given :param size
+    Creates a circle of True values with given :param center, :param radius in an image with given :param size
 
     :param center: Center of the mask
     :param size: Size of the containing image
