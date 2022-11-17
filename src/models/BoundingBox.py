@@ -20,6 +20,5 @@ class BoundingBox:
     def bound_img(self, img: np.ndarray):
         return img[self.x1:self.x2, self.y1:self.y2]
 
-
     def __str__(self):
         return f"x1: {self.x1},\ny1: {self.y1},\nx2: {self.x2},\ny2: {self.y2}"

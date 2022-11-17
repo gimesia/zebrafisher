@@ -7,7 +7,8 @@ class FishProperties:
         self.bounding_box_well: BoundingBox = BoundingBox()
         self.mask: Mask = Mask()
 
-        self.cropped_og = None
+        self.cropped_og = None  # Image of the original input image, but cropped to display only the fish
+
         self.rotated: bool = False
         self.has_fish: bool = None
 

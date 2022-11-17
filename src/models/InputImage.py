@@ -2,8 +2,8 @@ import cv2 as cv
 import czifile
 import numpy as np
 
-from src.models.WellProps import WellProperties
-from src.models.FishProps import FishProperties
+from .WellProps import WellProperties
+from .FishProps import FishProperties
 
 
 class InputImage:
