@@ -10,6 +10,8 @@ class FishProperties:
         self.cropped_og = None  # Image of the original input image, but cropped to display only the fish
 
         self.rotated: bool = False
+        self.head = None
+
         self.has_fish: bool = None
 
         self.contours: Contours = Contours()
