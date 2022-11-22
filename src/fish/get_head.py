@@ -58,7 +58,10 @@ def should_be_rotated(img: np.ndarray) -> bool:
 
     :rtype: bool
     """
-    return img.shape[0] > img.shape[1]
+    if img.shape[0] > img.shape[1]:
+        print('Image is rotated!')
+        return True
+    return False
 
 
 def get_head(bin_img: np.ndarray) -> (np.ndarray, str):

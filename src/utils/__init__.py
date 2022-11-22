@@ -3,6 +3,8 @@ from .circle_mask import create_circle_mask, circle_mask
 from .get_bounnding_box import *
 from .get_objects import *
 from .is_empty_img import *
+from .iterative_morphology import *
 from .normalize import *
+from .rangefilter import *
 from .terminal_msg import *
 from .yen_thresholding import *
