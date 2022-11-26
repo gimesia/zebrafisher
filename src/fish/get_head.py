@@ -5,6 +5,14 @@ from src.models import BoundingBox
 from src.utils.terminal_msg import show_img
 
 
+def get_side_img(img: np.ndarray, side: str) -> np.ndarray:
+    sides = get_two_sides_img(img)
+    if side == "l":
+        return sides[0]
+    elif side == "r":
+        return sides[1]
+
+
 def get_two_sides_img(img: np.ndarray) -> [np.ndarray, np.ndarray]:
     """
     Divides the image into 2 halves lengthwise
@@ -59,7 +67,6 @@ def should_be_rotated(img: np.ndarray) -> bool:
     :rtype: bool
     """
     if img.shape[0] > img.shape[1]:
-        print('Image is rotated!')
         return True
     return False
 
@@ -77,7 +84,4 @@ def get_head(bin_img: np.ndarray) -> (np.ndarray, str):
 
 
 if __name__ == '__main__':
-    # WIP
-    im = cv2.imread('output.png', 0)
-    a = get_head(im)
-    print(a[1])
+    pass

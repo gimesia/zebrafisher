@@ -22,6 +22,7 @@ def find_fish_props(input_img: InputImage) -> InputImage:
 
     if not is_fish(input_img.fish_props.mask.cropped, input_img.well_props.mask.cropped):
         input_img.fish_props.has_fish = False
+        msg("No possible fish was found")
         return input_img
     else:
         input_img.fish_props.has_fish = True
@@ -41,15 +42,15 @@ def get_possible_fish(input_img: InputImage) -> InputImage:
     input_img.processed = equalize_adapthist(input_img.processed)  # Equalizing
 
     msg("Applying wiener-filter")
-    input_img.processed = wiener(input_img.processed, mysize=25)  # denoising with wiener filter
+    input_img.processed = wiener(input_img.processed, mysize=30)  # Denoising with wiener filter
     input_img.processed = normalize_0_255(input_img.processed)  # Normalizing and sharpening for thresholding
     input_img.processed = unsharp_mask(input_img.processed, radius=2)  # Sharpening
-    wiener_filtered = adjust_gamma(input_img.processed, 1.5)
+    wiener_filtered = adjust_gamma(input_img.processed, 1.5)  # Enhancing contrast
 
     msg("Applying yen-threshold")
     binary_img = yen_th(input_img.processed)  # Yen-thresholding
 
-    binary_img = binary_closing(binary_img, disk(2))  # Closing
+    binary_img = binary_closing(binary_img, disk(2))
 
     msg("Removing meniscus")
     meniscus = get_meniscus_effect_(binary_img, input_img.well_props.mask.cropped).astype(float)
@@ -62,7 +63,7 @@ def get_possible_fish(input_img: InputImage) -> InputImage:
 
     # Creating convex hull for the fish
     msg("Convex hull for mask")
-    convex_mask = iterative_dilation(convex_hull_image(binary_img), 4, disk(5))  #
+    convex_mask = iterative_dilation(convex_hull_image(binary_img), 4, disk(5))  # Dilating hull to include eyes
 
     # Inner bbox (fish's bbox inside well's bbox)
     msg("Bounding box of fish")
@@ -72,9 +73,9 @@ def get_possible_fish(input_img: InputImage) -> InputImage:
     # Refining mask -> removing holes and small objects
     msg("Refining mask")
     mask = bbox_well_relative.bound_img(binary_img)
-    mask = iterative_closing(mask, 10, disk(5))
+    mask = iterative_closing(mask, 8, disk(5))
     mask = keep_largest_object(mask, filled=True)
-    mask = iterative_opening(mask, 10, disk(5))
+    mask = iterative_opening(mask, 8, disk(5))
     mask = keep_largest_object(mask, filled=True)
     input_img.fish_props.mask.cropped = mask
 
