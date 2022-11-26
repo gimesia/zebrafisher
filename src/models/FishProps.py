@@ -16,6 +16,7 @@ class FishProperties:
         self.eyes: np.ndarray = None
 
         self.has_fish: bool = None
+        self.has_eyes: bool = None
 
         self.contours: Contours = Contours()
         self.meniscus: np.ndarray = None
