@@ -3,6 +3,7 @@ import czifile
 import numpy as np
 import os
 
+from src.models.Measurements import Measurements
 from .WellProps import WellProperties
 from .FishProps import FishProperties
 
@@ -15,8 +16,10 @@ class InputImage:
         path = path + "\\images\\in\\" + filename
         """
         self.name = filename
-        cwd = os.getcwd()
-        path = os.path.join(cwd, 'images', 'in', filename)
+        cwd = os.path.abspath('..')
+        path = os.path.join(cwd, 'src', 'images', 'in', filename)
+
+        print(f"Reading in file from:\n{path}")
 
         if filename.split(".")[1] == "czi":
             self.og: np.ndarray = czifile.imread(path)[0, :, :, 0]
@@ -30,15 +33,16 @@ class InputImage:
 
         self.well_props: WellProperties = WellProperties()
         self.fish_props: FishProperties = FishProperties()
+        self.measurements: Measurements = Measurements()
+
+        self.success: bool = False
 
         try:
-            self._set_size()
+            self.height = self.og.shape[0]
+            self.width = self.og.shape[1]
         except():
-            raise Exception("Image loading failed")
+            print("Image loading failed")
 
-    def _set_size(self):
-        self.height = self.og.shape[0]
-        self.width = self.og.shape[1]
 
 if __name__ == '__main__':
     pass
