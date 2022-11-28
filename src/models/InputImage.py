@@ -12,12 +12,17 @@ class InputImage:
     def __init__(self, filename: str):
         """
         OLD!!!
-        path = os.path.dirname(__file__)  # r'src/images'  # NEED TO BE CHANGED IF RAN FROM ANOTHER COMPUTER
+        path = os.path.dirname(__file__)  # r"src/images" NEEDs TO BE CHANGED IF RAN FROM ANOTHER COMPUTER
         path = path + "\\images\\in\\" + filename
         """
         self.name = filename
-        cwd = os.path.abspath('..')
-        path = os.path.join(cwd, 'src', 'images', 'in', filename)
+
+        # Generating path from filename
+        cwd = os.getcwd()
+        path = os.path.abspath('..')
+        if path.split()[-1] != 'src':
+            path = os.path.join(path, 'src')
+        path = os.path.join(path, 'images', 'in', filename)
 
         print(f"Reading in file from:\n{path}")
 
@@ -42,7 +47,3 @@ class InputImage:
             self.width = self.og.shape[1]
         except():
             print("Image loading failed")
-
-
-if __name__ == '__main__':
-    pass

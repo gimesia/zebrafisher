@@ -2,6 +2,7 @@ import numpy as np
 from skimage.measure import label, regionprops
 from skimage.morphology import binary_closing, disk
 
+from .extract_to_csv import writerow_from_inputimage, put_analysis_result_into_csv
 from src.models import InputImage
 from src.utils import get_bounding_box_obj
 
@@ -14,6 +15,9 @@ def measure_fish_props(input_img: InputImage) -> InputImage:
         return input_img
 
     input_img = measure_eyes(input_img)  # Measuring eyes
+    input_img = measure_endpoints(input_img)  # Measuring endpoints
+
+    put_analysis_result_into_csv(input_img)
 
     return input_img
 

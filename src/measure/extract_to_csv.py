@@ -4,10 +4,10 @@ import os
 
 import numpy as np
 
-from src.models import InputImage, Measurements
+from ..models import InputImage, Measurements
 
 cwd = os.path.abspath("..")
-path = os.path.join(cwd, 'images', 'out', 'result.csv')
+path = os.path.join(cwd, 'src', 'images', 'out', 'result.csv')
 header = [
     "Date",
     "Successful",
@@ -23,12 +23,12 @@ header = [
 ]
 
 
-def put_analysis_result_into_csv() -> None:
+def put_analysis_result_into_csv(input_img: InputImage) -> None:
     global header
 
     try:
         lines = get_csv_lines()
-    except:
+    except():
         lines = []
 
     if len(lines) == 0 or lines[0][0] != header[0]:
@@ -36,14 +36,15 @@ def put_analysis_result_into_csv() -> None:
         create_csv()
 
     # writerow_from_measurement(input_img.measurements, input_img.name)
-    writerow_from_array(['', '2', '3', '4', '5', '7'])
+    writerow_from_inputimage(input_img)
     return
 
 
 def get_csv_lines() -> np.ndarray:
     """
+    Extracts lines from the cvs file defined by the path
 
-    :rtype:
+    :rtype: array of the lines
     """
     global path
     rows = np.genfromtxt(path, delimiter=',', dtype=str)
@@ -105,24 +106,14 @@ def writerow_from_inputimage(input_img: InputImage):
             "Date": str(datetime.now()),
             "Name": input_img.name,
             "Successful": input_img.success,
-            "Has_Fish": 0,
+            "Has_Fish": input_img.fish_props.has_fish,
             "Head_Coords": measurements.head_endpoint,
             "Tail_Coords": measurements.tail_endpoint,
             "Spine_Length": measurements.head_to_tail_length,
-            "Has_Eyes": 0,
+            "Has_Eyes": input_img.fish_props.has_eyes,
             "Eye1_Diameter_major": measurements.eye1_diameter_major,
             "Eye2_Diameter_major": measurements.eye2_diameter_major,
         })
-
-
-def measurements2array(measurements: Measurements) -> np.ndarray:
-    return np.asarray[
-        measurements.head_endpoint,
-        measurements.tail_endpoint,
-        measurements.head_to_tail_length,
-        measurements.eye1_diameter_major,
-        measurements.eye2_diameter_major
-    ]
 
 
 if __name__ == '__main__':
