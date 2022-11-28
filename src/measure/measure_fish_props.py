@@ -19,6 +19,8 @@ def measure_fish_props(input_img: InputImage) -> InputImage:
 
     put_analysis_result_into_csv(input_img)
 
+    # TODO imsave into src/images/out
+
     return input_img
 
 
