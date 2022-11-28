@@ -9,7 +9,7 @@ from src.utils.rangefilter import range_filter
 from .is_fish import is_fish
 from .get_eyes import get_eyes
 from .get_head import should_be_rotated, get_head
-from .remove_container import iterative_dilation, get_meniscus_effect_
+from .remove_container import iterative_dilation, get_meniscus_effect_, get_meniscus_effect__
 from ..models import InputImage, BoundingBox
 from ..utils import keep_largest_object, get_bounding_box_obj, normalize_0_1, \
     normalize_0_255, yen_th, msg, show_img, iterative_closing, iterative_opening
@@ -22,12 +22,17 @@ def find_fish_props(input_img: InputImage) -> InputImage:
 
     if not is_fish(input_img.fish_props.mask.cropped, input_img.well_props.mask.cropped):
         input_img.fish_props.has_fish = False
+        input_img.success = False
         msg("No possible fish was found")
         return input_img
     else:
         input_img.fish_props.has_fish = True
 
     input_img = get_eyes(input_img)
+    if not input_img.fish_props.has_eyes:
+        input_img.success = False
+        msg("No possible eyes were found")
+        return input_img
 
     return input_img
 
@@ -65,7 +70,7 @@ def get_possible_fish(input_img: InputImage) -> InputImage:
     msg("Convex hull for mask")
     convex_mask = iterative_dilation(convex_hull_image(binary_img), 4, disk(5))  # Dilating hull to include eyes
 
-    # Inner bbox (fish's bbox inside well's bbox)
+    # Inner bbox (fish's bbox in well's bbox)
     msg("Bounding box of fish")
     bbox_well_relative = get_bounding_box_obj(convex_mask)
     input_img.fish_props.bounding_box_well = bbox_well_relative

@@ -1,14 +1,13 @@
-from typing import Tuple
-
 import numpy as np
 from skimage.exposure import adjust_gamma, equalize_adapthist
 from skimage.filters._unsharp_mask import unsharp_mask
 from skimage.measure import label, regionprops
+from skimage.measure._regionprops import RegionProperties
 from skimage.morphology import binary_erosion, disk, binary_opening, binary_dilation, binary_closing
 
 from src.models import BoundingBox, InputImage
-from .get_head import should_be_rotated, get_head, get_two_sides_img, get_two_sides_bbox
-from ..utils import show_img, msg, keep_2_largest_object
+from .get_head import should_be_rotated, get_head, get_two_sides_img
+from ..utils import msg, keep_2_largest_object, keep_largest_object
 
 
 def get_eyes(input_img: InputImage) -> InputImage:
@@ -21,13 +20,17 @@ def get_eyes(input_img: InputImage) -> InputImage:
     """
     mask = input_img.fish_props.mask.og
     cropped_mask = input_img.fish_props.mask.cropped
-    masked = adjust_gamma((unsharp_mask(input_img.fish_props.cropped_og, radius=2) * mask), gamma=2)
+    cropped_og = input_img.fish_props.cropped_og
+
+    masked = adjust_gamma((unsharp_mask(cropped_og, radius=2) * mask), gamma=2)
 
     # Rotating if width < height
-    if should_be_rotated(input_img.fish_props.mask.cropped):
-        masked = np.transpose(masked)
-        mask = np.transpose(mask)
+    if should_be_rotated(cropped_mask):
         input_img.fish_props.rotated = True
+        mask = np.transpose(mask)
+        cropped_mask = np.transpose(cropped_mask)
+        cropped_og = np.transpose(cropped_og)
+        masked = np.transpose(masked)
 
     # Splitting images and masks in half
     sides = get_two_sides_img(masked)  # masked
@@ -54,7 +57,7 @@ def get_eyes(input_img: InputImage) -> InputImage:
 
     mean = np.mean(head[head_mask != 0])  # Mean intensity of image
 
-    th = (head < mean * 0.3) * head_mask  # thresholding
+    th = (head < mean * 0.32) * head_mask  # thresholding
 
     th = eye_spy(th)  # filtering out possible eye objects
     th = remove_hind_objects(th, side)  # removing objects in the hindsight of the head part
@@ -65,6 +68,7 @@ def get_eyes(input_img: InputImage) -> InputImage:
         if eye_count > 5:
             msg(f"Found more than 5 possible eyes found: {eye_count}")
             input_img.fish_props.has_eyes = False
+            input_img.success = False
             input_img.fish_props.eyes = np.zeros_like(head)
             return input_img
         if 5 >= eye_count:  # If there are only a few objects present, we only keep the 2 largest
@@ -77,10 +81,11 @@ def get_eyes(input_img: InputImage) -> InputImage:
         input_img.fish_props.has_eyes = True
     elif eye_count == 2:
         msg("Found 2 eyes!")
+        th = convex_eyes(th)  # Keeping the convex shapes of the eyes if there is only 2
         input_img.fish_props.has_eyes = True
     elif eye_count == 0:
         msg("No eyes found!")
-        input_img.fish_props.eyes = np.zeros_like(head)
+        input_img.fish_props.eyes = np.zeros_like(mask)
         input_img.fish_props.has_eyes = False
         return input_img  # Returns if there were no eyes found
 
@@ -92,18 +97,23 @@ def get_eyes(input_img: InputImage) -> InputImage:
     head_with_eyes = np.logical_or(th, head_cropped_mask)
     if side == "l":
         cropped_mask = np.concatenate([head_with_eyes, sides_cropped_mask[1]], axis=1)
+        th = np.concatenate([th, np.zeros_like(sides_cropped_mask[1])], axis=1)
     elif side == "r":
         cropped_mask = np.concatenate([sides_cropped_mask[0], head_with_eyes], axis=1)
+        th = np.concatenate([np.zeros_like(sides_cropped_mask[0]), th], axis=1)
 
-    cropped_mask = binary_closing(cropped_mask, disk(15))  # Closing any fitting imperfections
+    cropped_mask = keep_largest_object(binary_closing(cropped_mask, disk(15)))  # Closing any fitting imperfections
+
     input_img.fish_props.mask.cropped = cropped_mask
+    input_img.fish_props.cropped_og = cropped_og
+    input_img.fish_props.eyes = th
 
-    """
-    THIS ROTATES THE FISH AND THE MASKS BACK TO THEIR ORIGINAL ORIENTATION
+    # Rotating back previously rotated masks
     if input_img.fish_props.rotated:
         input_img.fish_props.mask.og = input_img.fish_props.mask.og.transpose()
         input_img.fish_props.mask.cropped = input_img.fish_props.mask.cropped.transpose()
-        input_img.fish_props.cropped_og = input_img.fish_props.cropped_og.transpose()"""
+        input_img.fish_props.cropped_og = input_img.fish_props.cropped_og.transpose()
+        input_img.fish_props.eyes = input_img.fish_props.eyes.transpose()
 
     return input_img
 
@@ -119,7 +129,7 @@ def eye_spy(fish: np.ndarray):
     return rem
 
 
-def eye_criteria(x) -> bool:
+def eye_criteria(x: RegionProperties) -> bool:
     if x.eccentricity > 0.92:
         return False
     if x.area < 300 or x.area > 2000:
@@ -152,7 +162,15 @@ def check_eyes(bin_img: np.ndarray) -> (bool, int):
     return True if 3 > len(props) > 0 else False, len(props)
 
 
-def put_rprops_on_empty(shape: (int, int), rprops, convex: bool = False):
+def convex_eyes(bin_img: np.ndarray) -> np.ndarray:
+    props = regionprops(label(bin_img))
+    if len(props) == 2:
+        return put_rprops_on_empty(bin_img.shape, props, True)
+    print(f"{len(props)} eyes cannot be turned convex")
+    return bin_img
+
+
+def put_rprops_on_empty(shape: (int, int), rprops: list[RegionProperties], convex: bool = False):
     rem = np.zeros(shape)
     for i_, r in enumerate(rprops):
         bbox = BoundingBox()

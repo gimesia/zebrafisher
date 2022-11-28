@@ -1,7 +1,7 @@
 import numpy as np
 from skimage.morphology import disk, erosion, binary_dilation, square
 
-from src.utils import iterative_dilation
+from src.utils import iterative_dilation, show_img
 
 
 def get_perimeter(bin_img: np.ndarray) -> np.ndarray:
@@ -15,7 +15,8 @@ def get_perimeter(bin_img: np.ndarray) -> np.ndarray:
     return np.abs(np.subtract(bw_erode, bin_img))
 
 
-def recursive_meniscus_analysis(data: np.ndarray, perimeter: np.ndarray, se: np.ndarray, i: int) -> (np.ndarray, int):
+def recursive_meniscus_analysis(data: np.ndarray, perimeter: np.ndarray, se: np.ndarray, i: int,
+                                mask: np.ndarray = None) -> (np.ndarray, int):
     """
     Recursive function that dilates the container until it has less than 45% True values, when masked with the original
 
@@ -23,6 +24,8 @@ def recursive_meniscus_analysis(data: np.ndarray, perimeter: np.ndarray, se: np.
     :return: dilated container
     """
     perimeter = binary_dilation(perimeter, se)
+    if mask is not None:
+        perimeter = perimeter * mask
     dilated_cont_masked = data * perimeter
 
     perimeter_nonzero = len(perimeter.nonzero()[0])
@@ -32,7 +35,6 @@ def recursive_meniscus_analysis(data: np.ndarray, perimeter: np.ndarray, se: np.
         return data, i
 
     filled = masked_nonzero / perimeter_nonzero
-
     if filled > 0.5:
         return recursive_meniscus_analysis(data, perimeter, se, i + 1)
     return perimeter, i
@@ -83,24 +85,29 @@ def get_meniscus_effect__(binary_img: np.ndarray, mask: np.ndarray) -> np.ndarra
 
     perimeter = get_perimeter(mask).astype(bool)
     lt_c, lb_c, rt_c, rb_c = divide_into_quarters(perimeter)
+    lt_m, lb_m, rt_m, rb_m = divide_into_quarters(mask)
 
     se = disk(3)
-    lt_thresh, lt_iters = recursive_meniscus_analysis(lt, lt_c, se, 1)
+    lt_thresh, lt_iters = recursive_meniscus_analysis(lt, lt_c, se, 1, lt_m)
     # print(f'{lt_iters}')
-    lb_thresh, lb_iters = recursive_meniscus_analysis(lb, lb_c, se, 1)
+    lb_thresh, lb_iters = recursive_meniscus_analysis(lb, lb_c, se, 1, lb_m)
     # print(f'{lb_iters}')
-    rt_thresh, rt_iters = recursive_meniscus_analysis(rt, rt_c, se, 1)
+    rt_thresh, rt_iters = recursive_meniscus_analysis(rt, rt_c, se, 1, rt_m)
     # print(f'{rt_iters}')
-    rb_thresh, rb_iters = recursive_meniscus_analysis(rb, rb_c, se, 1)
+    rb_thresh, rb_iters = recursive_meniscus_analysis(rb, rb_c, se, 1, rb_m)
     # print(f'{rb_iters}')
 
     mx = max([lt_iters, lb_iters, rt_iters, rb_iters])
 
-    print(f'max: {mx}')
+    #  print(f'max: {mx}')
     left_side = np.concatenate((iterative_dilation(lt_c, lt_iters, se), iterative_dilation(lb_c, lb_iters, se)), axis=0)
     right_side = np.concatenate((iterative_dilation(rt_c, rt_iters, se), iterative_dilation(rb_c, rb_iters, se)),
                                 axis=0)
     full = np.concatenate((left_side, right_side), axis=1)
+
+    """
+    show_img(perimeter, 'perim before')
+    show_img(full, 'perim  after')"""
 
     return full
 

@@ -24,7 +24,7 @@ def is_fish(img: np.ndarray, well_mask: np.ndarray) -> bool:
         print(f"Isn't eccentric enough: {reg_props[0].eccentricity}")
         return False
 
-    if reg_props[0].area > (well_area * 0.3):
+    if reg_props[0].area > (well_area * 0.10):
         print("NOT FISH!")
         print(f"Too big! object.area / well.area = {reg_props[0].area / well_area}")
         return False
