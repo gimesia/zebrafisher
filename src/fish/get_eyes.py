@@ -64,17 +64,10 @@ def get_eyes(input_img: InputImage) -> InputImage:
 
     are_eyes, eye_count = check_eyes(th)
 
-    if eye_count > 2:
-        if eye_count > 5:
-            msg(f"Found more than 5 possible eyes found: {eye_count}")
-            input_img.fish_props.has_eyes = False
-            input_img.success = False
-            input_img.fish_props.eyes = np.zeros_like(head)
-            return input_img
-        if 5 >= eye_count:  # If there are only a few objects present, we only keep the 2 largest
-            msg(f"Found more than 2 possible eyes found: {eye_count} -> keeping the 2 largest")
-            th = keep_2_largest_object(th)
-            are_eyes, eye_count = check_eyes(th)
+    if 5 >= eye_count > 2:  # If there are only a few objects present, we only keep the 2 largest
+        msg(f"Found more than 2 possible eyes found: {eye_count} -> keeping the 2 largest")
+        th = keep_2_largest_object(th)
+        are_eyes, eye_count = check_eyes(th)
 
     if eye_count == 1:
         msg("Only found one eye!")
@@ -83,27 +76,36 @@ def get_eyes(input_img: InputImage) -> InputImage:
         msg("Found 2 eyes!")
         th = convex_eyes(th)  # Keeping the convex shapes of the eyes if there is only 2
         input_img.fish_props.has_eyes = True
+        input_img.success = True
     elif eye_count == 0:
         msg("No eyes found!")
-        input_img.fish_props.eyes = np.zeros_like(mask)
         input_img.fish_props.has_eyes = False
-        return input_img  # Returns if there were no eyes found
+        input_img.success = False
+        input_img.fish_props.eyes = np.zeros_like(mask)
+    else:
+        msg(f"Found more than 5 possible eyes found: {eye_count}")
+        input_img.fish_props.has_eyes = False
+        input_img.success = False
+        input_img.fish_props.eyes = np.zeros_like(mask)
 
-    th = binary_dilation(th, disk(3))  # Dilating previously eroded objects
+    # If eyes were found
+    if input_img.fish_props.has_eyes:
+        th = binary_dilation(th, disk(3))  # Dilating previously eroded objects
 
-    input_img.fish_props.eyes = th
+        input_img.fish_props.eyes = th
 
-    # Adding eyes to the cropped mask
-    head_with_eyes = np.logical_or(th, head_cropped_mask)
-    if side == "l":
-        cropped_mask = np.concatenate([head_with_eyes, sides_cropped_mask[1]], axis=1)
-        th = np.concatenate([th, np.zeros_like(sides_cropped_mask[1])], axis=1)
-    elif side == "r":
-        cropped_mask = np.concatenate([sides_cropped_mask[0], head_with_eyes], axis=1)
-        th = np.concatenate([np.zeros_like(sides_cropped_mask[0]), th], axis=1)
+        # Adding eyes to the cropped mask
+        head_with_eyes = np.logical_or(th, head_cropped_mask)
+        if side == "l":
+            cropped_mask = np.concatenate([head_with_eyes, sides_cropped_mask[1]], axis=1)
+            th = np.concatenate([th, np.zeros_like(sides_cropped_mask[1])], axis=1)
+        elif side == "r":
+            cropped_mask = np.concatenate([sides_cropped_mask[0], head_with_eyes], axis=1)
+            th = np.concatenate([np.zeros_like(sides_cropped_mask[0]), th], axis=1)
 
-    cropped_mask = keep_largest_object(binary_closing(cropped_mask, disk(15)))  # Closing any fitting imperfections
+        cropped_mask = keep_largest_object(binary_closing(cropped_mask, disk(15)))  # Closing any fitting imperfections
 
+    # Storing masks and thresholded images
     input_img.fish_props.mask.cropped = cropped_mask
     input_img.fish_props.cropped_og = cropped_og
     input_img.fish_props.eyes = th
@@ -114,6 +116,11 @@ def get_eyes(input_img: InputImage) -> InputImage:
         input_img.fish_props.mask.cropped = input_img.fish_props.mask.cropped.transpose()
         input_img.fish_props.cropped_og = input_img.fish_props.cropped_og.transpose()
         input_img.fish_props.eyes = input_img.fish_props.eyes.transpose()
+
+    # Making sure that eye correctly stored
+    if input_img.fish_props.eyes.shape != input_img.fish_props.mask.cropped.shape:
+        input_img.fish_props.has_eyes = False
+        input_img.success = False
 
     return input_img
 

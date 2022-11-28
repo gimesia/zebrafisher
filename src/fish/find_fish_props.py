@@ -34,6 +34,13 @@ def find_fish_props(input_img: InputImage) -> InputImage:
         msg("No possible eyes were found")
         return input_img
 
+    # Creating fish mask relative to the well
+    mask_in_well = np.zeros_like(input_img.well_props.mask.cropped)
+    bbox = input_img.fish_props.bounding_box_well
+    mask_in_well[bbox.x1:bbox.x2, bbox.y1:bbox.y2] = input_img.fish_props.mask.cropped
+    input_img.fish_props.mask.og = mask_in_well
+    input_img.fish_props.mask.masked = mask_in_well * input_img.well_props.mask.cropped_masked
+
     return input_img
 
 
@@ -50,7 +57,6 @@ def get_possible_fish(input_img: InputImage) -> InputImage:
     input_img.processed = wiener(input_img.processed, mysize=30)  # Denoising with wiener filter
     input_img.processed = normalize_0_255(input_img.processed)  # Normalizing and sharpening for thresholding
     input_img.processed = unsharp_mask(input_img.processed, radius=2)  # Sharpening
-    wiener_filtered = adjust_gamma(input_img.processed, 1.5)  # Enhancing contrast
 
     msg("Applying yen-threshold")
     binary_img = yen_th(input_img.processed)  # Yen-thresholding
