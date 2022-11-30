@@ -26,10 +26,13 @@ class InputImage:
 
         print(f"Reading in file from:\n{path}")
 
-        if filename.split(".")[1] == "czi":
+        fileformat: str = filename.split(".")[-1]
+        fileformat = fileformat.lower()
+
+        if fileformat == "czi":
             self.og: np.ndarray = czifile.imread(path)[0, :, :, 0]
             self.processed: np.ndarray = self.og
-        else:
+        elif fileformat == "png" or fileformat == "tiff" or fileformat == "jpg":
             self.og: np.ndarray = cv.imread(path, 0)  # Already processes it into grayscale
             self.processed: np.ndarray = self.og
 
