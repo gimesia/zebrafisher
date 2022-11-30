@@ -12,6 +12,7 @@ def measure_fish_props(input_img: InputImage) -> InputImage:
 
     if not input_img.fish_props.has_fish or not input_img.fish_props.has_eyes:
         # write in csv
+        put_analysis_result_into_csv(input_img)
         return input_img
 
     input_img = measure_eyes(input_img)  # Measuring eyes

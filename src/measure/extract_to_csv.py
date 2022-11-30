@@ -10,6 +10,7 @@ cwd = os.path.abspath("..")
 path = os.path.join(cwd, 'src', 'images', 'out', 'result.csv')
 header = [
     "Date",
+    "Time",
     "Successful",
     "Name",
     "Has_Fish",
@@ -74,11 +75,12 @@ def writerow_from_array(measurements: list):
     global header
     with open(path, 'a', newline='') as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=header)
-        if len(measurements) < 5:
-            for i in range(len(measurements), 6):
+        if len(measurements) < len(header):
+            for i in range(len(measurements), len(header)):
                 measurements.append('')
         writer.writerow({
-            "Date": str(datetime.now()),
+            "Date": str(datetime.now().date()),
+            "Time": str(datetime.now().time()),
             "Name": measurements[0],
             "Successful": measurements[0],
             "Has_Fish": 0,
@@ -103,7 +105,8 @@ def writerow_from_inputimage(input_img: InputImage):
     with open(path, 'a', newline='') as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=header)
         writer.writerow({
-            "Date": str(datetime.now()),
+            "Date": str(datetime.now().date()),
+            "Time": str(datetime.now().time()),
             "Name": input_img.name,
             "Successful": input_img.success,
             "Has_Fish": input_img.fish_props.has_fish,

@@ -25,9 +25,11 @@ def create_result_image(input_img: InputImage) -> np.ndarray:
     cv2.drawContours(cropped_f, fish_contours, -1, (0, 255, 0), 2)
     cv2.drawContours(cropped_f, eye_contours, -1, (255, 0, 0), 2)
 
-    show_img(cropped_w)
-    show_img(cropped_f)
+    # show_img(cropped_w)
+    # show_img(cropped_f)
 
     cropped_w = bbox_well.bound_img(cropped_w)
     cropped_w[bbox_fish.x1:bbox_fish.x2, bbox_fish.y1:bbox_fish.y2] = cropped_f
-    return cropped_w
+    res = gray2rgb(input_img.og)
+    res[bbox_well.x1:bbox_well.x2, bbox_well.y1:bbox_well.y2] = cropped_w
+    return res
