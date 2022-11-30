@@ -1,7 +1,7 @@
 import numpy as np
-from skimage.morphology import disk, erosion, binary_dilation, square
+from skimage.morphology import disk, erosion, binary_dilation
 
-from src.utils import iterative_dilation, show_img
+from ..utils import iterative_dilation
 
 
 def get_perimeter(bin_img: np.ndarray) -> np.ndarray:
@@ -104,10 +104,6 @@ def get_meniscus_effect__(binary_img: np.ndarray, mask: np.ndarray) -> np.ndarra
     right_side = np.concatenate((iterative_dilation(rt_c, rt_iters, se), iterative_dilation(rb_c, rb_iters, se)),
                                 axis=0)
     full = np.concatenate((left_side, right_side), axis=1)
-
-    """
-    show_img(perimeter, 'perim before')
-    show_img(full, 'perim  after')"""
 
     return full
 

@@ -5,9 +5,9 @@ from skimage.measure import label, regionprops
 from skimage.measure._regionprops import RegionProperties
 from skimage.morphology import binary_erosion, disk, binary_opening, binary_dilation, binary_closing
 
-from src.models import BoundingBox, InputImage
 from .get_head import should_be_rotated, get_head, get_two_sides_img
-from ..utils import msg, keep_2_largest_object, keep_largest_object
+from ..models import BoundingBox, InputImage
+from ..utils import msg, keep_2_largest_object
 
 
 def get_eyes(input_img: InputImage) -> InputImage:
@@ -32,8 +32,8 @@ def get_eyes(input_img: InputImage) -> InputImage:
         cropped_og = np.transpose(cropped_og)
         masked = np.transpose(masked)
 
-    # Splitting images and masks in half
-    sides = get_two_sides_img(masked)  # masked
+    # Splitting image and masks in half
+    sides = get_two_sides_img(masked)
     sides_mask = get_two_sides_img(mask)
     sides_cropped_mask = get_two_sides_img(cropped_mask)
 
@@ -57,7 +57,7 @@ def get_eyes(input_img: InputImage) -> InputImage:
 
     mean = np.mean(head[head_mask != 0])  # Mean intensity of image
 
-    th = (head < mean * 0.32) * head_mask  # thresholding
+    th = (head < mean * 0.28) * head_mask  # thresholding
 
     th = eye_spy(th)  # filtering out possible eye objects
     th = remove_hind_objects(th, side)  # removing objects in the hindsight of the head part
@@ -103,8 +103,6 @@ def get_eyes(input_img: InputImage) -> InputImage:
             cropped_mask = np.concatenate([sides_cropped_mask[0], head_with_eyes], axis=1)
             th = np.concatenate([np.zeros_like(sides_cropped_mask[0]), th], axis=1)
 
-        cropped_mask = keep_largest_object(binary_closing(cropped_mask, disk(15)))  # Closing any fitting imperfections
-
     # Storing masks and thresholded images
     input_img.fish_props.mask.cropped = cropped_mask
     input_img.fish_props.cropped_og = cropped_og
@@ -117,10 +115,33 @@ def get_eyes(input_img: InputImage) -> InputImage:
         input_img.fish_props.cropped_og = input_img.fish_props.cropped_og.transpose()
         input_img.fish_props.eyes = input_img.fish_props.eyes.transpose()
 
+    # Creating fish mask relative to the well
+    mask_in_well = np.zeros_like(input_img.well_props.mask.cropped)
+    bbox = input_img.fish_props.bounding_box_well
+    mask_in_well[bbox.x1:bbox.x2, bbox.y1:bbox.y2] = input_img.fish_props.mask.cropped
+
+    mask_in_well = binary_closing(mask_in_well, disk(13))  # Closing holes and smoothing edges
+
+    input_img.fish_props.mask.og = mask_in_well
+    input_img.fish_props.mask.masked = mask_in_well * input_img.well_props.mask.cropped_masked
+
+    # Updating cropped ones
+    bbox = input_img.fish_props.bounding_box_well
+    input_img.fish_props.mask.cropped = bbox.bound_img(input_img.fish_props.mask.og)
+    input_img.fish_props.mask.cropped_masked = bbox.bound_img(input_img.fish_props.mask.masked)
+
     # Making sure that eye correctly stored
     if input_img.fish_props.eyes.shape != input_img.fish_props.mask.cropped.shape:
-        input_img.fish_props.has_eyes = False
-        input_img.success = False
+        if not input_img.fish_props.has_eyes:
+            input_img.fish_props.eyes = np.zeros_like(input_img.fish_props.mask.cropped.shape)
+            return input_img
+        else:
+            raise Exception(
+                f'hazard'
+                f'input_img.fish_props.eyes.shape != input_img.fish_props.mask.cropped.shape ->'
+                f' {input_img.fish_props.eyes.shape} != {input_img.fish_props.mask.cropped.shape}')
+            # input_img.fish_props.has_eyes = False
+            # input_img.success = False
 
     return input_img
 

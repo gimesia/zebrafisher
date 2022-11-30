@@ -18,12 +18,4 @@ class FishProperties:
         self.has_fish: bool = None
         self.has_eyes: bool = None
 
-        self.contours: Contours = Contours()
         self.meniscus: np.ndarray = None
-
-
-class Contours:
-    def __init__(self):
-        self.body = None
-        self.spine = None
-        self.eyes = None

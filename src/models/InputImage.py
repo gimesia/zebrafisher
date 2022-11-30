@@ -26,8 +26,7 @@ class InputImage:
 
         print(f"Reading in file from:\n{path}")
 
-        fileformat: str = filename.split(".")[-1]
-        fileformat = fileformat.lower()
+        fileformat: str = filename.split(".")[-1].lower()  # Gets file format if item is a file
 
         if fileformat == "czi":
             self.og: np.ndarray = czifile.imread(path)[0, :, :, 0]
