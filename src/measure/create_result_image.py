@@ -1,13 +1,15 @@
 import cv2
 import numpy as np
 from skimage.color import gray2rgb
-from skimage.measure import find_contours
 
-from src.models import InputImage
-from src.utils import show_img
+from ..models import InputImage
 
 
 def create_result_image(input_img: InputImage) -> np.ndarray:
+    """
+
+    :rtype: RGB image of the original with the marked lines
+    """
     bbox_well = input_img.well_props.bounding_box
     bbox_fish = input_img.fish_props.bounding_box_well
 

@@ -1,13 +1,9 @@
-import csv
-from datetime import datetime
 import os
+from csv import reader, DictWriter
+from datetime import datetime
 
-import numpy as np
+from ..models import InputImage
 
-from ..models import InputImage, Measurements
-
-cwd = os.path.abspath("..")
-path = os.path.join(cwd, 'src', 'images', 'out', 'result.csv')
 header = [
     "Date",
     "Time",
@@ -20,35 +16,52 @@ header = [
     "Has_Eyes",
     "Eye1_Diameter_major",
     "Eye2_Diameter_major",
-    "Area"
+    "Area",
+    "Comment"
 ]
+
+cwd = os.path.abspath("..")
+path = os.path.join(cwd, "src", "images", "out")
+files = os.listdir(path)
+path = os.path.join(path, "results.csv")
+
+
+if not files.__contains__("results.csv"):
+    with open(path, "w", newline="") as csvfile:
+        writer = DictWriter(csvfile, fieldnames=header)
+        writer.writeheader()
 
 
 def put_analysis_result_into_csv(input_img: InputImage) -> None:
     global header
 
-    try:
-        lines = get_csv_lines()
-    except():
-        lines = []
+    lines = get_csv_lines()
 
     if len(lines) == 0 or lines[0][0] != header[0]:
         print("Creating CSV")
         create_csv()
 
     # writerow_from_measurement(input_img.measurements, input_img.name)
-    writerow_from_inputimage(input_img)
+    writerow_from_input_image(input_img)
     return
 
 
-def get_csv_lines() -> np.ndarray:
+def get_csv_lines() -> list:
     """
     Extracts lines from the cvs file defined by the path
 
     :rtype: array of the lines
     """
     global path
-    rows = np.genfromtxt(path, delimiter=',', dtype=str)
+
+    rows = []
+    try:
+        with open(path, 'r') as read_obj:
+            csv_reader = reader(read_obj)
+            for row in csv_reader:
+                rows.append(row)
+    except():
+        pass
     return rows
 
 
@@ -59,12 +72,8 @@ def create_csv(head=None):
     if head is None:
         head = header
 
-    with open(path, 'w', newline='') as csvfile:
-        writer = csv.DictWriter(csvfile, fieldnames=head)
-        writer.writeheader()
 
-
-def writerow_from_array(measurements: list):
+def writerow_empty():
     """
     Writes a row with a writer according to the given measurement object and name
 
@@ -73,27 +82,27 @@ def writerow_from_array(measurements: list):
     :param name: Name of object
     """
     global header
-    with open(path, 'a', newline='') as csvfile:
-        writer = csv.DictWriter(csvfile, fieldnames=header)
-        if len(measurements) < len(header):
-            for i in range(len(measurements), len(header)):
-                measurements.append('')
+    with open(path, "a", newline="") as csvfile:
+        writer = DictWriter(csvfile, fieldnames=header)
+
         writer.writerow({
             "Date": str(datetime.now().date()),
             "Time": str(datetime.now().time()),
-            "Name": measurements[0],
-            "Successful": measurements[0],
-            "Has_Fish": 0,
-            "Head_Coords": measurements[1],
-            "Tail_Coords": measurements[2],
-            "Spine_Length": measurements[3],
-            "Has_Eyes": 0,
-            "Eye1_Diameter_major": measurements[4],
-            "Eye2_Diameter_major": measurements[5],
+            "Name": "",
+            "Successful": "",
+            "Has_Fish": "",
+            "Head_Coords": "",
+            "Tail_Coords": "",
+            "Spine_Length": "",
+            "Has_Eyes": "",
+            "Eye1_Diameter_major": "",
+            "Eye2_Diameter_major": "",
+            "Area": "",
+            "Comment": ""
         })
 
 
-def writerow_from_inputimage(input_img: InputImage):
+def writerow_from_input_image(input_img: InputImage):
     """
     Writes a row with a writer according to the given measurement object and name
 
@@ -102,8 +111,8 @@ def writerow_from_inputimage(input_img: InputImage):
     global header
     measurements = input_img.measurements
 
-    with open(path, 'a', newline='') as csvfile:
-        writer = csv.DictWriter(csvfile, fieldnames=header)
+    with open(path, "a", newline="") as csvfile:
+        writer = DictWriter(csvfile, fieldnames=header)
         writer.writerow({
             "Date": str(datetime.now().date()),
             "Time": str(datetime.now().time()),
@@ -116,9 +125,6 @@ def writerow_from_inputimage(input_img: InputImage):
             "Has_Eyes": input_img.fish_props.has_eyes,
             "Eye1_Diameter_major": measurements.eye1_diameter_major,
             "Eye2_Diameter_major": measurements.eye2_diameter_major,
+            "Area": False,
+            "Comment": ""
         })
-
-
-if __name__ == '__main__':
-    put_analysis_result_into_csv()
-    print('fin')
