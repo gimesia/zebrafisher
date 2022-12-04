@@ -82,9 +82,9 @@ def get_eyes(input_img: InputImage) -> InputImage:
     elif eye_count == 0:
         msg("No eyes found!")
         input_img.fish_props.has_eyes = False
-        input_img.success = False
-        input_img.measurements.eye_count = 0
         input_img.fish_props.eyes = np.zeros_like(mask)
+        input_img.measurements.eye_count = 0
+        input_img.success = False
     else:
         msg(f"Found more than 5 possible eyes found: {eye_count}")
         input_img.fish_props.has_eyes = False
@@ -142,7 +142,6 @@ def get_eyes(input_img: InputImage) -> InputImage:
             return input_img
         else:
             raise Exception(
-                f'hazard'
                 f'input_img.fish_props.eyes.shape != input_img.fish_props.mask.cropped.shape ->'
                 f' {input_img.fish_props.eyes.shape} != {input_img.fish_props.mask.cropped.shape}')
             # input_img.fish_props.has_eyes = False
@@ -151,23 +150,35 @@ def get_eyes(input_img: InputImage) -> InputImage:
     return input_img
 
 
-def eye_spy(fish: np.ndarray):
+def eye_spy(bin_img: np.ndarray) -> np.ndarray:
+    """
+    Searches for eye-like objects in a binary image
+
+    :param bin_img: thresholded image
+    :returns: image with only eye-like objects
+    """
     msg("Searching for eye regions")
-    fish = binary_erosion(fish, disk(3))
-    fish = binary_opening(fish, disk(3))
-    props = regionprops(label(fish))
+    bin_img = binary_erosion(bin_img, disk(3))
+    bin_img = binary_opening(bin_img, disk(3))
+    props = regionprops(label(bin_img))
     props = list(filter(eye_criteria, props))
 
-    rem = put_rprops_on_empty(fish.shape, props)
+    rem = put_rprops_on_empty(bin_img.shape, props)
     return rem
 
 
-def eye_criteria(x: RegionProperties) -> bool:
-    if x.eccentricity > 0.92:
+def eye_criteria(regionprops: RegionProperties) -> bool:
+    """
+
+    :param regionprops: regionprops object
+    :rtype: bool
+    :returns: True if eye-like object
+    """
+    if regionprops.eccentricity > 0.92:
         return False
-    if x.area < 300 or x.area > 2000:
+    if regionprops.area < 300 or regionprops.area > 2000:
         return False
-    if x.solidity < 0.5:
+    if regionprops.solidity < 0.5:
         return False
     return True
 
@@ -191,6 +202,13 @@ def remove_hind_objects(bin_img: np.ndarray, side: str) -> np.ndarray:
 
 
 def check_eyes(bin_img: np.ndarray) -> (bool, int):
+    """
+    Counts eyes
+
+    :param bin_img: input binary image
+    :rtype: (bool,int)
+    :return: True if more than 0 eye, eye count
+    """
     props = regionprops(label(bin_img))
     return True if 3 > len(props) > 0 else False, len(props)
 
@@ -203,7 +221,16 @@ def convex_eyes(bin_img: np.ndarray) -> np.ndarray:
     return bin_img
 
 
-def put_rprops_on_empty(shape: (int, int), rprops: list[RegionProperties], convex: bool = False):
+def put_rprops_on_empty(shape: (int, int), rprops: list[RegionProperties], convex: bool = False) -> np.ndarray:
+    """
+    Puts RegionProperties on an empty image
+
+    :param shape: shape of desired image
+    :param rprops: regions to be displayed
+    :param convex: decision regarding the convexity of the dispayed objects
+    :rtype: np.ndarray
+    :return: image displaying the given regions
+    """
     rem = np.zeros(shape)
     for i_, r in enumerate(rprops):
         bbox = BoundingBox()

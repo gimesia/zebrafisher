@@ -6,6 +6,13 @@ from src.utils.terminal_msg import show_img
 
 
 def get_side_img(img: np.ndarray, side: str) -> np.ndarray:
+    """
+    Crops the given image to the side given in the parameter (left or right)
+
+    :param img: input image
+    :param side: desired side
+    :return: side of the input image
+    """
     sides = get_two_sides_img(img)
     if side == "l":
         return sides[0]
@@ -26,7 +33,7 @@ def get_two_sides_img(img: np.ndarray) -> [np.ndarray, np.ndarray]:
 
     left_side = img[:, 0:cw]
     right_side = img[:, cw:]
-    return left_side, right_side
+    return [left_side, right_side]
 
 
 def get_two_sides_bbox(bbox: BoundingBox) -> (BoundingBox, BoundingBox):
