@@ -71,22 +71,26 @@ def get_eyes(input_img: InputImage) -> InputImage:
     if eye_count == 1:
         msg("Only found one eye!")
         input_img.fish_props.has_eyes = True
+        input_img.measurements.eye_count = 1
         input_img.success = True
     elif eye_count == 2:
         msg("Found 2 eyes!")
         th = convex_eyes(th)  # Keeping the convex shapes of the eyes if there is only 2
         input_img.fish_props.has_eyes = True
+        input_img.measurements.eye_count = 2
         input_img.success = True
     elif eye_count == 0:
         msg("No eyes found!")
         input_img.fish_props.has_eyes = False
         input_img.success = False
+        input_img.measurements.eye_count = 0
         input_img.fish_props.eyes = np.zeros_like(mask)
     else:
         msg(f"Found more than 5 possible eyes found: {eye_count}")
         input_img.fish_props.has_eyes = False
+        input_img.measurements.eye_count = eye_count
         input_img.success = False
-        input_img.fish_props.eyes = np.zeros_like(mask)
+        input_img.fish_props.eyes = th
 
     # If eyes were found
     if input_img.fish_props.has_eyes:
@@ -122,6 +126,7 @@ def get_eyes(input_img: InputImage) -> InputImage:
 
     mask_in_well = binary_closing(mask_in_well, disk(13))  # Closing holes and smoothing edges
 
+    # Storing masks relative to cropped well
     input_img.fish_props.mask.og = mask_in_well
     input_img.fish_props.mask.masked = mask_in_well * input_img.well_props.mask.cropped_masked
 

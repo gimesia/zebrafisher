@@ -1,10 +1,7 @@
-import numpy as np
 from skimage.measure import label, regionprops
 
-from . import align_to_x_axis
 from .extract_to_csv import put_analysis_result_into_csv
 from ..models import InputImage
-from ..utils import get_bounding_box_obj, show_img
 
 
 def measure_fish_props(input_img: InputImage) -> InputImage:
@@ -40,25 +37,15 @@ def measure_eyes(input_img: InputImage) -> InputImage:
 
 
 def measure_endpoints(input_image: InputImage) -> InputImage:
-    mask = input_image.fish_props.mask.og
-    start_size = np.zeros_like(mask)
-
+    mask = input_image.fish_props.mask.cropped
     props = regionprops(label(mask))
 
-    input_image.measurements.orientation = props[0].orientation
-    input_image.measurements.centroid = props[0].centroid
+    major = props[0].axis_major_length
+    minor = props[0].axis_minor_length
 
-    centroid = props[0].centroid
-    orientation = props[0].orientation
+    input_image.measurements.axis_major = major
+    input_image.measurements.axis_minor = minor
+    input_image.measurements.calculate_axes_ratio()
+    input_image.measurements.area = props[0].area
 
-    show_img(mask, 'before rotatin')
-    print(f'shape: {mask.shape}')
-    print(f'centroid: {centroid}')
-    print(f'orient: {orientation}')
-
-    bbox = get_bounding_box_obj(mask)
-    mask = align_to_x_axis(mask, orientation, centroid)
-
-    show_img(mask, 'after rotatin')
-    print(f'shape: {mask.shape}')
     return input_image

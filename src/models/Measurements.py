@@ -3,6 +3,7 @@ class Measurements:
     def __init__(self):
         self.resolution: float = None
         self.head_to_tail_length: float = None
+        self.eye_count: 1 | 2 | 0 = 0
         self.eye1_diameter_major: float = None
         self.eye2_diameter_major: float = None
         self.axis_major: float = None

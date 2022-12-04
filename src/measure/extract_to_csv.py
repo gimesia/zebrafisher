@@ -10,12 +10,13 @@ header = [
     "Successful",
     "Name",
     "Has_Fish",
-    "Head_Coords",
-    "Tail_Coords",
-    "Spine_Length",
+    "Major_Axis",
+    "Minor_Axis",
+    "Axes_ratio",
     "Has_Eyes",
     "Eye1_Diameter_major",
     "Eye2_Diameter_major",
+    "Resolution",
     "Area",
     "Comment"
 ]
@@ -24,7 +25,6 @@ cwd = os.path.abspath("..")
 path = os.path.join(cwd, "src", "images", "out")
 files = os.listdir(path)
 path = os.path.join(path, "results.csv")
-
 
 if not files.__contains__("results.csv"):
     with open(path, "w", newline="") as csvfile:
@@ -72,6 +72,10 @@ def create_csv(head=None):
     if head is None:
         head = header
 
+    with open(path, "a", newline="") as csvfile:
+        writer = DictWriter(csvfile, fieldnames=header)
+        writer.writeheader()
+
 
 def writerow_empty():
     """
@@ -86,17 +90,18 @@ def writerow_empty():
         writer = DictWriter(csvfile, fieldnames=header)
 
         writer.writerow({
-            "Date": str(datetime.now().date()),
-            "Time": str(datetime.now().time()),
-            "Name": "",
+            "Date": "",
+            "Time": "",
             "Successful": "",
+            "Name": "",
             "Has_Fish": "",
-            "Head_Coords": "",
-            "Tail_Coords": "",
-            "Spine_Length": "",
+            "Major_Axis": "",
+            "Minor_Axis": "",
+            "Axes_ratio": "",
             "Has_Eyes": "",
             "Eye1_Diameter_major": "",
             "Eye2_Diameter_major": "",
+            "Resolution": "",
             "Area": "",
             "Comment": ""
         })
@@ -119,12 +124,13 @@ def writerow_from_input_image(input_img: InputImage):
             "Name": input_img.name,
             "Successful": input_img.success,
             "Has_Fish": input_img.fish_props.has_fish,
-            "Head_Coords": measurements.head_endpoint,
-            "Tail_Coords": measurements.tail_endpoint,
-            "Spine_Length": measurements.head_to_tail_length,
-            "Has_Eyes": input_img.fish_props.has_eyes,
+            "Major_Axis": measurements.axis_major,
+            "Minor_Axis": measurements.axis_minor,
+            "Axes_ratio": measurements.axes_ratio,
+            "Has_Eyes": measurements.eye_count,
             "Eye1_Diameter_major": measurements.eye1_diameter_major,
             "Eye2_Diameter_major": measurements.eye2_diameter_major,
-            "Area": False,
+            "Resolution": measurements.resolution,
+            "Area": measurements.area,
             "Comment": ""
         })
