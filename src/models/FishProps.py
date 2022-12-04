@@ -18,4 +18,3 @@ class FishProperties:
         self.has_fish: bool = None
         self.has_eyes: bool = None
 
-        self.meniscus: np.ndarray = None

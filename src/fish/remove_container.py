@@ -8,7 +8,8 @@ def get_perimeter(bin_img: np.ndarray) -> np.ndarray:
     """
     Returns the perimeter line of a binary image
 
-    @rtype: mask of perimeter
+    :rtype: np.ndarray
+    :returns: mask of perimeter
     """
     se = disk(5)
     bw_erode = erosion(bin_img, se)
@@ -16,12 +17,12 @@ def get_perimeter(bin_img: np.ndarray) -> np.ndarray:
 
 
 def recursive_meniscus_analysis(data: np.ndarray, perimeter: np.ndarray, se: np.ndarray, i: int,
-                                mask: np.ndarray = None) -> (np.ndarray, int):
+                                mask: np.ndarray = None) -> tuple[np.ndarray, int]:
     """
     Recursive function that dilates the container until it has less than 45% True values, when masked with the original
 
-    :rtype: np.ndarray
-    :return: dilated container
+    :rtype: tuple[np.ndarray,int]
+    :returns: dilated container
     """
     perimeter = binary_dilation(perimeter, se)
     if mask is not None:

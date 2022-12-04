@@ -6,6 +6,12 @@ from ..utils import msg
 
 
 def find_fish_props(input_img: InputImage) -> InputImage:
+    """
+    Searches for fish object in an image, stores the results in the input object
+
+    :rtype: InputImage
+    :returns: The input image object with filled fish_props property
+    """
     msg("Searching for fish properties")
 
     input_img = get_possible_fish(input_img)

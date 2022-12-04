@@ -11,15 +11,19 @@ from .remove_container import get_meniscus_effect__
 
 
 def get_possible_fish(input_img: InputImage) -> InputImage:
+    """
+    Localizes body of the fish embryo in an InputImage
+    Notes:
+    - Well localization must precede
+    - Result may have an eye missing
+
+    :rtype: InputImage
+    :returns: input object with fish location results
+    """
     msg("Localizing potential embryo")
 
     msg("Applying range-filter")
-    """    sharpened = unsharp_mask(input_img.processed, radius=2)  # Sharpening
-    input_img.processed = range_filter(sharpened, input_img.well_props.mask.cropped)  # Range-filter
-    input_img.processed = normalize_0_1(input_img.processed)  # Normalizing for wiener
-    input_img.processed = equalize_adapthist(input_img.processed)  # Equalizing"""
     input_img.processed = edge_detection(input_img.processed) * input_img.well_props.mask.cropped
-    show_img(input_img.processed)
 
     msg("Applying wiener-filter")
     input_img.processed = wiener_denoising(input_img.processed)  # Denoising
@@ -27,12 +31,10 @@ def get_possible_fish(input_img: InputImage) -> InputImage:
     msg("Applying yen-threshold")
     binary_img = yen_th(input_img.processed)  # Yen-thresholding
 
-    binary_img = binary_closing(binary_img, disk(2))
+    binary_img = binary_closing(binary_img, disk(2))  # Connecting pixels
 
     msg("Removing meniscus")
     meniscus = get_meniscus_effect__(binary_img, input_img.well_props.mask.cropped).astype(float)
-    input_img.fish_props.meniscus = meniscus  # TEMP
-
     binary_img = binary_img - meniscus
 
     msg("Keeping only the possible fish")
@@ -40,7 +42,8 @@ def get_possible_fish(input_img: InputImage) -> InputImage:
 
     # Creating convex hull for the fish
     msg("Convex hull for mask")
-    convex_mask = iterative_dilation(convex_hull_image(binary_img), 4, disk(5))  # Dilating hull to include eyes
+    convex_mask = convex_hull_image(binary_img)
+    convex_mask = iterative_dilation(convex_mask, 4, disk(5))  # Dilating hull to include eyes
 
     # Inner bbox (fish's bbox in well's bbox)
     msg("Bounding box of fish")
@@ -80,14 +83,26 @@ def get_possible_fish(input_img: InputImage) -> InputImage:
 
 
 def wiener_denoising(img: np.ndarray) -> np.ndarray:
+    """
+    Denoising function for edge filtered image
+
+    :rtype: np.ndarray
+    :returns: denoised image
+    """
+    img = normalize_0_1(img)  # Normalizing for wiener
     img = wiener(img, mysize=30)  # Denoising with wiener filter
     img = normalize_0_255(img)  # Normalizing and sharpening for thresholding
-    img = unsharp_mask(img, radius=2)  # Sharpening
+    img = unsharp_mask(img, radius=1.5)  # Sharpening
     return img
 
 
 def edge_detection(img: np.ndarray) -> np.ndarray:
+    """
+    Performs edge detection filter on an image
+
+    :rtype: np.ndarray
+    :returns: Image of detected edges
+    """
     sharpened = unsharp_mask(img, radius=2)  # Sharpening
     img = range_filter(sharpened)  # Range-filter
-    img = normalize_0_1(img)  # Normalizing for wiener
     return equalize_adapthist(img)

@@ -56,11 +56,10 @@ def get_eyes(input_img: InputImage) -> InputImage:
     head = equalize_adapthist(head)  # Expanding distance between bins
 
     mean = np.mean(head[head_mask != 0])  # Mean intensity of image
-
     th = (head < mean * 0.28) * head_mask  # thresholding
 
     th = eye_spy(th)  # filtering out possible eye objects
-    th = remove_hind_objects(th, side)  # removing objects in the hindsight of the head part
+    th = remove_hind_objects(th, side)  # removing objects on the hind side of the head part
 
     are_eyes, eye_count = check_eyes(th)
 
@@ -72,6 +71,7 @@ def get_eyes(input_img: InputImage) -> InputImage:
     if eye_count == 1:
         msg("Only found one eye!")
         input_img.fish_props.has_eyes = True
+        input_img.success = True
     elif eye_count == 2:
         msg("Found 2 eyes!")
         th = convex_eyes(th)  # Keeping the convex shapes of the eyes if there is only 2
@@ -92,7 +92,7 @@ def get_eyes(input_img: InputImage) -> InputImage:
     if input_img.fish_props.has_eyes:
         th = binary_dilation(th, disk(3))  # Dilating previously eroded objects
 
-        input_img.fish_props.eyes = th
+        input_img.fish_props.eyes = th  # Storing eyes
 
         # Adding eyes to the cropped mask
         head_with_eyes = np.logical_or(th, head_cropped_mask)
