@@ -10,11 +10,6 @@ from .FishProps import FishProperties
 
 class InputImage:
     def __init__(self, filename: str):
-        """
-        OLD!!!
-        path = os.path.dirname(__file__)  # r"src/images" NEEDs TO BE CHANGED IF RAN FROM ANOTHER COMPUTER
-        path = path + "\\images\\in\\" + filename
-        """
         self.name = filename
 
         # Generating path from filename

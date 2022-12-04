@@ -5,6 +5,6 @@ from .get_objects import *
 from .is_empty_img import *
 from .iterative_morphology import *
 from .normalize import *
-from .rangefilter import *
+from .range_filter import *
 from .terminal_msg import *
 from .yen_thresholding import *

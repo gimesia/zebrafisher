@@ -10,7 +10,7 @@ def get_bounding_box(img: np.ndarray) -> [int, int, int, int]:
     Notes: - advised to use, when only one object is present
 
     :param img: input img
-    :return: bounding box coordinates [x1, y1, x2, y2]
+    :returns: bounding box coordinates [x1, y1, x2, y2]
     """
     actual_height, actual_width = img.shape[0], img.shape[1]
 
@@ -37,7 +37,7 @@ def get_bounding_box_obj(img: np.ndarray) -> BoundingBox:
     Notes: - advised to use, when only one object is present
 
     :param img: input img
-    :return: bounding box object
+    :returns: bounding box object
     """
     bbox = BoundingBox()
     bbox.set(get_bounding_box(img))
@@ -45,5 +45,15 @@ def get_bounding_box_obj(img: np.ndarray) -> BoundingBox:
     return bbox
 
 
-if __name__ == "__main__":
-    pass
+def crop_to_bbox(bin_img: np.ndarray):
+    """
+    Crops binary image with one visible object to the size of the bounding box of the object
+
+    :param bin_img: binary image with one object
+
+    :returns: cropped binary image
+    """
+    props = regionprops(label(bin_img))[0]
+    bbox = BoundingBox()
+    bbox.set(props.bbox)
+    return bbox.bound_img(bin_img)
