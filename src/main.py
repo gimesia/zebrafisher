@@ -1,13 +1,15 @@
 import os
 
 import cv2
+import numpy as np
 
 from src.fish import find_fish_props
 from src.measure import create_result_image
 from src.measure.measure_fish_props import measure_fish_props
 from src.models import InputImage
+from src.models.Timer import Timer
 from src.utils import normalize_0_255
-from src.utils.terminal_msg import msg, show_img, show_multiple_img
+from src.utils.terminal_msg import msg, show_img
 from src.well.find_well_props import find_well_props
 
 
@@ -19,26 +21,41 @@ def image_processing_pipeline(filename: str, save: bool = True) -> InputImage:
         msg("InputImage failed to load")
         return input_img
 
-    input_img.processed = normalize_0_255(input_img.processed)  # Normalizing intensity
+    input_img.processed = normalize_0_255(input_img.processed).astype(np.uint8)  # Normalizing intensity
 
     # Find well script
+    well_timer = Timer()
     input_img = find_well_props(input_img)
+    well_timer.stop()
+
     if input_img.well_props.has_well:
         msg("FOUND WELL!")
 
         # Find fish script
+        fish_timer = Timer()
         input_img = find_fish_props(input_img)
+        fish_timer.stop()
+
         if input_img.fish_props.has_fish and input_img.fish_props.has_eyes:
             input_img.success = True
             msg("FOUND FISH & EYE(S)!")
+        elif input_img.fish_props.has_fish and not input_img.fish_props.has_eyes:
+            msg("FOUND FISH, BUT NO EYE(S)!")
+            input_img.success = False
         else:
+            msg("NO FISH WAS FOUND!")
             input_img.success = False
     else:
-        msg("No well was found!")
+        msg("NO WELL WAS FOUND!")
         input_img.success = False
 
     # Measure segmented fish
+    measurements_timer = Timer()
     input_img = measure_fish_props(input_img)
+    measurements_timer.stop()
+
+    input_img.measurements.times = [well_timer.duration.seconds, fish_timer.duration.seconds,
+                                    measurements_timer.duration.seconds]
 
     # Save result image
     if input_img.success and save:
@@ -66,21 +83,21 @@ def run_pipeline_for_all_images(save: bool = False, popups: bool = False):
         print("No image files found in \'images/in\'")
         return
 
-    for i, name in enumerate(fish_names):
+    for i, name in enumerate(fish_names[::]):
         print(f"# Running image processing algorithm #{i + 1} on file: {name}")
         try:
             fish = image_processing_pipeline(name)
         except():
-            print("Input image file is not the right format!")
+            print("Input image file is not the right format (.jpg, .tiff, .czi, .png!")
 
         if fish.success:
-            print("\n\n")
+            print("\n")
             print("ANALYSIS SUCCESSFUL")
             print("\n\n")
             if popups:
                 show(fish)
         else:
-            print("\n\n")
+            print("\n")
             print("ANALYSIS FAILED")
             print("\n\n")
 
