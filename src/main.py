@@ -11,7 +11,7 @@ from src.utils.terminal_msg import msg
 from src.well.find_well_props import find_well_props
 
 
-def image_processing_pipeline(filename: str, save=True, dir_name="", popups=False) -> InputImage:
+def image_processing_pipeline(filename: str, save=True, popups=False) -> InputImage:
     msg("Start image processing pipeline")
     input_img = InputImage(filename)
 
@@ -54,8 +54,9 @@ def image_processing_pipeline(filename: str, save=True, dir_name="", popups=Fals
 
     input_img.timer.stop()
 
-    input_img.measurements.times = [well_timer.duration, fish_timer.duration, measurements_timer.duration,
-                                    input_img.timer.duration]
+    # Save Times
+    # input_img.measurements.times =
+    # [well_timer.duration, fish_timer.duration, measurements_timer.duration,input_img.timer.duration]
 
     # Save result image
     if input_img.success and save:
@@ -86,7 +87,7 @@ def run_pipeline_for_all_images(save: bool = False, batch_name: str = "", popups
     for i, name in enumerate(fish_names[::]):
         print(f"# Running image processing algorithm #{i + 1} on file: {name}")
         try:
-            fish = image_processing_pipeline(name)
+            fish = image_processing_pipeline(name, save, popups)
         except():
             print("Input image file is not the right format (.jpg, .tiff, .czi, .png!")
 
@@ -136,4 +137,4 @@ def get_names() -> list[str]:
 
 
 if __name__ == "__main__":
-    run_pipeline_for_all_images(save=True, batch_name="", popups=True)
+    run_pipeline_for_all_images(True, "", popups=True)

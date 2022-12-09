@@ -1,4 +1,5 @@
-from . import process_well_mask, well_hough_transformation
+from .process_well_mask import process_well_mask
+from .well_hough_transformation import well_hough_transformation
 from ..models import InputImage
 from ..utils import msg
 
