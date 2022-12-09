@@ -10,7 +10,3 @@ class Timer:
     def stop(self):
         self.end = datetime.now()
         self.duration = self.end - self.start
-
-
-if __name__ == '__main__':
-    t = Timer()

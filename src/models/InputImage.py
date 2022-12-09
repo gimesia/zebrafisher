@@ -1,11 +1,13 @@
+import os
+
 import cv2 as cv
 import czifile
 import numpy as np
-import os
 
 from src.models.Measurements import Measurements
-from .WellProps import WellProperties
 from .FishProps import FishProperties
+from .Timer import Timer
+from .WellProps import WellProperties
 
 
 class InputImage:
@@ -18,8 +20,6 @@ class InputImage:
         if path.split()[-1] != 'src':
             path = os.path.join(path, 'src')
         path = os.path.join(path, 'images', 'in', filename)
-
-        print(f"Reading in file from:\n{path}")
 
         fileformat: str = filename.split(".")[-1].lower()  # Gets file format if item is a file
 
@@ -39,6 +39,7 @@ class InputImage:
 
         self.success: bool = False
 
+        self.timer = Timer()
         try:
             self.height = self.og.shape[0]
             self.width = self.og.shape[1]
