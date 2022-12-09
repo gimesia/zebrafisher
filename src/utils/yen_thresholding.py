@@ -2,8 +2,8 @@ import numpy as np
 from skimage.filters.thresholding import threshold_yen, threshold_isodata
 from skimage.morphology import remove_small_holes, remove_small_objects
 
-from src.models import InputImage
-from src.utils.terminal_msg import msg
+from .terminal_msg import msg
+from ..models import InputImage
 
 
 def remove_speckles(img: np.ndarray) -> np.ndarray:

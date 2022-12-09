@@ -1,7 +1,7 @@
 import numpy as np
 from skimage.measure import regionprops, label
 
-from src.utils import keep_largest_object
+from ..utils import keep_largest_object
 
 
 def is_fish(img: np.ndarray, well_mask: np.ndarray) -> bool:

@@ -1,7 +1,7 @@
 from skimage.morphology import binary_dilation, disk
 
-from src.models import InputImage
-from src.utils import is_empty_img, msg, get_bounding_box_obj, create_circle_mask
+from ..models import InputImage
+from ..utils import is_empty_img, msg, get_bounding_box_obj, create_circle_mask
 
 
 def process_well_mask(input_img: InputImage) -> InputImage:

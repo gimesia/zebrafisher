@@ -4,10 +4,10 @@ from skimage.exposure import equalize_adapthist
 from skimage.filters._unsharp_mask import unsharp_mask
 from skimage.morphology import binary_closing, disk, convex_hull_image
 
-from src.models import InputImage, BoundingBox
-from src.utils import msg, range_filter, normalize_0_1, normalize_0_255, yen_th, keep_largest_object, \
-    iterative_dilation, get_bounding_box_obj, iterative_closing, iterative_opening, show_img
 from .remove_container import get_meniscus_effect__
+from ..models import InputImage, BoundingBox
+from ..utils import msg, range_filter, normalize_0_1, normalize_0_255, yen_th, keep_largest_object, \
+    iterative_dilation, get_bounding_box_obj, iterative_closing, iterative_opening
 
 
 def get_possible_fish(input_img: InputImage) -> InputImage:

@@ -1,19 +1,17 @@
 import os
 
-import cv2
 import numpy as np
 
 from src.fish import find_fish_props
-from src.measure import create_result_image
-from src.measure.measure_fish_props import measure_fish_props
+from src.measure import save_result_image, measure_fish_props, writerow_empty, measurement_times_csv
 from src.models import InputImage
 from src.models.Timer import Timer
 from src.utils import normalize_0_255
-from src.utils.terminal_msg import msg, show_img
+from src.utils.terminal_msg import msg
 from src.well.find_well_props import find_well_props
 
 
-def image_processing_pipeline(filename: str, save: bool = True) -> InputImage:
+def image_processing_pipeline(filename: str, save=True, dir_name="", popups=False) -> InputImage:
     msg("Start image processing pipeline")
     input_img = InputImage(filename)
 
@@ -24,17 +22,17 @@ def image_processing_pipeline(filename: str, save: bool = True) -> InputImage:
     input_img.processed = normalize_0_255(input_img.processed).astype(np.uint8)  # Normalizing intensity
 
     # Find well script
-    well_timer = Timer()
+    well_timer = Timer()  # timer start
     input_img = find_well_props(input_img)
-    well_timer.stop()
+    well_timer.stop()  # timer stop
 
     if input_img.well_props.has_well:
         msg("FOUND WELL!")
 
         # Find fish script
-        fish_timer = Timer()
+        fish_timer = Timer()  # timer start
         input_img = find_fish_props(input_img)
-        fish_timer.stop()
+        fish_timer.stop()  # timer stop
 
         if input_img.fish_props.has_fish and input_img.fish_props.has_eyes:
             input_img.success = True
@@ -50,34 +48,36 @@ def image_processing_pipeline(filename: str, save: bool = True) -> InputImage:
         input_img.success = False
 
     # Measure segmented fish
-    measurements_timer = Timer()
+    measurements_timer = Timer()  # timer start
     input_img = measure_fish_props(input_img)
-    measurements_timer.stop()
+    measurements_timer.stop()  # timer stop
 
-    input_img.measurements.times = [well_timer.duration.seconds, fish_timer.duration.seconds,
-                                    measurements_timer.duration.seconds]
+    input_img.timer.stop()
+
+    input_img.measurements.times = [well_timer.duration, fish_timer.duration, measurements_timer.duration,
+                                    input_img.timer.duration]
 
     # Save result image
     if input_img.success and save:
-        res = create_result_image(input_img)
-        show_img(res, f"{input_img.name}: Lines")
-
-        cwd = os.getcwd()
-        os.chdir(os.path.join(cwd, "images", "out"))
-        cv2.imwrite(f"{input_img.name.split('.')[0]}_processed.jpg", res)
-        os.chdir(cwd)
+        save_result_image(input_img, popups)
 
     return input_img
 
 
-def run_pipeline_for_all_images(save: bool = False, popups: bool = False):
+def run_pipeline_for_all_images(save: bool = False, batch_name: str = "", popups: bool = False):
+    """
+    Runs image processing pipeline on all files in 'src\\images\\in' or in its 1 deep folders
+    :param save: If True result images are saved
+    :param batch_name: Name of the analyzed batch
+    :param popups: If True the result images are shown in a popup window
+    """
     cwd = os.getcwd()
     os.chdir(os.path.join(cwd, "images", "in"))  # Changing working directory to read filenames
     fish_names = os.listdir()  # Read filenames
     os.chdir(cwd)  # Changing directory back to original
 
-    fish_names = list(filter(lambda x: len(x.split(".")) > 1, fish_names))  # filtering out non-file names
-
+    # fish_names = list(filter(lambda x: 3 > len(x.split(".")) > 1, fish_names))  # filtering out non-file names
+    fish_names = get_names()
     # Break the pipeline
     if not len(fish_names):
         print("No image files found in \'images/in\'")
@@ -94,26 +94,46 @@ def run_pipeline_for_all_images(save: bool = False, popups: bool = False):
             print("\n")
             print("ANALYSIS SUCCESSFUL")
             print("\n\n")
-            if popups:
-                show(fish)
+        # if popups:
+
         else:
             print("\n")
             print("ANALYSIS FAILED")
             print("\n\n")
 
+        measurement_times_csv(
+            [batch_name, fish.name, fish.measurements.times[0], fish.measurements.times[1], fish.measurements.times[2],
+             fish.measurements.times[3]])
+
+    writerow_empty(f"END OF BATCH {batch_name}")
     print("fin.")
 
 
-def show(inp: InputImage):
-    # show_img(inp.well_props.mask.cropped_masked, "inp.well_props.mask.cropped_masked")
-    # show_img(inp.fish_props.mask.og, 'inp.fish_props.mask.og')
-    # show_img(inp.fish_props.cropped_og, 'inp.fish_props.cropped_og')
-    # show_img(inp.og, 'inp.fish_props.cropped_og')
-    # show_img(inp.fish_props.mask.cropped, 'inp.fish_props.mask.cropped')
-    # show_img(inp.fish_props.eyes.astype(float), 'eyes')
-    return
+def get_names() -> list[str]:
+    """
+    Gets the filenames in src/images/in and 1 deep directories
+
+    :return: list of the filenames
+    """
+    cwd = os.getcwd()
+    path = os.path.join(cwd, "images", "in")
+    os.chdir(path)  # Changing working directory to read filenames
+
+    fish_names = os.listdir()  # Read filenames
+    dirs = list(filter(lambda x: len(x.split(".")) == 1, fish_names))  # Filter out names
+    files = []  # Files
+
+    for dir in dirs:
+        dir_files = os.listdir(os.path.join(path, dir))
+        for f in dir_files:
+            files.append(f'{dir}\\{f}')
+
+    if len(dirs) == 0:
+        files = list(filter(lambda x: len(x.split(".")) == 2, fish_names))
+
+    os.chdir(cwd)  # Changing directory back to original
+    return files
 
 
 if __name__ == "__main__":
-    run_pipeline_for_all_images(True)
-    print("fin")
+    run_pipeline_for_all_images(save=True, batch_name="", popups=True)

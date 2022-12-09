@@ -1,8 +1,6 @@
-from src.models import InputImage
-from src.utils import create_circle_mask
-from src.utils.terminal_msg import msg
-from src.well import well_hough_transformation
-from src.well.process_well_mask import process_well_mask
+from . import process_well_mask, well_hough_transformation
+from ..models import InputImage
+from ..utils import msg
 
 
 def find_well_props(input_img: InputImage) -> InputImage:

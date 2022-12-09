@@ -169,6 +169,7 @@ def eye_spy(bin_img: np.ndarray) -> np.ndarray:
 
 def eye_criteria(regionprops: RegionProperties) -> bool:
     """
+    Filter criteria for an eye-like regionprops obj
 
     :param regionprops: regionprops object
     :rtype: bool

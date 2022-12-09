@@ -1,8 +1,6 @@
-import cv2
 import numpy as np
 
-from src.models import BoundingBox
-from src.utils.terminal_msg import show_img
+from ..models import BoundingBox
 
 
 def get_side_img(img: np.ndarray, side: str) -> np.ndarray:
@@ -88,7 +86,3 @@ def get_head(bin_img: np.ndarray) -> (np.ndarray, str):
     l, r = get_two_sides_img(bin_img)
     l_m, r_m = mean_of_col_sums(l), mean_of_col_sums(r)
     return (l, 'l') if l_m > r_m else (r, 'r')
-
-
-if __name__ == '__main__':
-    pass

@@ -2,11 +2,11 @@
 Nem az enyém, kéne rá creditet adni
 """
 
+from math import sqrt, pi
 
 import numpy as np
+from matplotlib import pyplot as plt
 from scipy import optimize
-from matplotlib import pyplot as plt, cm, colors
-from math import sqrt, pi
 
 
 def calc_R(x, y, xc, yc):

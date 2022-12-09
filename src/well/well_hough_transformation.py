@@ -1,9 +1,8 @@
 import cv2 as cv
 import numpy as np
-from skimage.color import gray2rgb, rgb2gray
 
-from src.models import InputImage
-from src.utils.terminal_msg import msg, show_img
+from ..models import InputImage
+from ..utils import msg
 
 
 def get_circle_limits(input_img: InputImage) -> [int, int]:

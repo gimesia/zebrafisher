@@ -5,7 +5,14 @@ from src.models import BoundingBox
 from src.utils.terminal_msg import msg
 
 
-def keep_largest_object(binary_img: np.ndarray, filled=False) -> np.ndarray:
+def keep_largest_object(binary_img: np.ndarray, filled: bool = False) -> np.ndarray:
+    """
+    Keeps only the biggest object on a binary image
+
+    :param binary_img: input image
+    :param filled: option to fill the holes in the kept objet
+    :return: input image containing only the largest object
+    """
     # msg("Finding largest object")
 
     labeled = label(binary_img)
