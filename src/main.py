@@ -3,15 +3,21 @@ import os
 import numpy as np
 
 from src.fish import find_fish_props
-from src.measure import save_result_image, measure_fish_props, writerow_empty, measurement_times_csv
-from src.models import InputImage
-from src.models.Timer import Timer
-from src.utils import normalize_0_255
-from src.utils.terminal_msg import msg
+from src.measure import save_result_image, measure_fish_props, writerow_empty
+from src.models import InputImage, Timer
+from src.utils import normalize_0_255, msg
 from src.well.find_well_props import find_well_props
 
 
-def image_processing_pipeline(filename: str, save=True, popups=False) -> InputImage:
+def image_processing_pipeline(filename: str, save: bool = True, popups: bool = False) -> InputImage:
+    """
+    Zebra-fish embryo morphological analysis pipeline
+
+    :param filename: name of the input file (must be in 'src/images/in')
+    :param save: If True result images are saved into 'src/images/out'
+    :param popups: If True a popup window is shown after a successful pipeline
+    :return: InputImage object with filled properties
+    """
     msg("Start image processing pipeline")
     input_img = InputImage(filename)
 
@@ -95,16 +101,15 @@ def run_pipeline_for_all_images(save: bool = False, batch_name: str = "", popups
             print("\n")
             print("ANALYSIS SUCCESSFUL")
             print("\n\n")
-        # if popups:
 
         else:
             print("\n")
             print("ANALYSIS FAILED")
             print("\n\n")
 
-        measurement_times_csv(
-            [batch_name, fish.name, fish.measurements.times[0], fish.measurements.times[1], fish.measurements.times[2],
-             fish.measurements.times[3]])
+        # measurement_times_csv(
+        #   [batch_name, fish.name, fish.measurements.times[0], fish.measurements.times[1], fish.measurements.times[2],
+        #   fish.measurements.times[3]])
 
     writerow_empty(f"END OF BATCH {batch_name}")
     print("fin.")
@@ -137,4 +142,4 @@ def get_names() -> list[str]:
 
 
 if __name__ == "__main__":
-    run_pipeline_for_all_images(True, "", popups=True)
+    run_pipeline_for_all_images(save=True, batch_name="", popups=True)

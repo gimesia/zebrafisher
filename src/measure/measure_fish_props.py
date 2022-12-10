@@ -13,15 +13,18 @@ def measure_fish_props(input_img: InputImage) -> InputImage:
     """
     input_img.measurements.calculate_resolution(input_img.well_props.radius)  # Calculating resolution
 
-    if not input_img.fish_props.has_fish or not input_img.fish_props.has_eyes:
-        # write in csv
-        measurements_to_csv(input_img)
+    if not input_img.fish_props.has_fish:
+        if not input_img.fish_props.has_eyes:
+            measurements_to_csv(input_img)  # Save measurements to destination csv
+            return input_img
+
+        input_img = measure_axes(input_img)  # Measuring endpoints
         return input_img
 
     input_img = measure_eyes(input_img)  # Measuring eyes
     input_img = measure_axes(input_img)  # Measuring endpoints
 
-    measurements_to_csv(input_img)
+    measurements_to_csv(input_img)  # Save measurements to destination csv
 
     return input_img
 

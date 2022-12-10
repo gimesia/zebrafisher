@@ -1,6 +1,7 @@
 import numpy as np
 
-from src.models import BoundingBox, Mask
+from .BoundingBox import BoundingBox
+from .Mask import Mask
 
 
 class FishProperties:
@@ -17,4 +18,3 @@ class FishProperties:
 
         self.has_fish: bool = None
         self.has_eyes: bool = None
-

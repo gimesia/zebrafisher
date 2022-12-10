@@ -1,4 +1,5 @@
-from src.models import BoundingBox, Mask
+from .BoundingBox import BoundingBox
+from .Mask import Mask
 
 
 class WellProperties:
