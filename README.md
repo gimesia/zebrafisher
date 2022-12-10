@@ -27,7 +27,10 @@ Example images are included in ``src/images/examples``
 Saving and showing the result image is set to True by default, but can be turned off in the calling of the main
 executing function.
 
-``run_pipeline_for_all_images(save=True, batch_name="", popups=True)``
+``` python
+"""src/main.py 145:5"""
+run_pipeline_for_all_images(save=True, batch_name="", popups=True)
+```
 
 The processes are visualised in Jupyter Notebook files in the 'well', 'fish', and 'measure' packages
 
