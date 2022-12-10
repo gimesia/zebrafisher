@@ -29,8 +29,7 @@ executing function.
 
 ``run_pipeline_for_all_images(save=True, batch_name="", popups=True)``
 
-The processes are visualised in Jupyter Notebook files, the input folder for the images to be shown in the notebooks
-is ``src/images/temp``
+The processes are visualised in Jupyter Notebook files in the 'well', 'fish', and 'measure' packages
 
 ---
 Copyright <2022> <Áron Gimesi>
