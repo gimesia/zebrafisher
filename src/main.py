@@ -25,7 +25,8 @@ def image_processing_pipeline(filename: str, save: bool = True, popups: bool = F
         msg("InputImage failed to load")
         return input_img
 
-    input_img.processed = normalize_0_255(input_img.processed).astype(np.uint8)  # Normalizing intensity
+    input_img.processed = normalize_0_255(
+        input_img.processed).astype(np.uint8)  # Normalizing intensity
 
     # Find well script
     well_timer = Timer()  # timer start
@@ -79,7 +80,8 @@ def run_pipeline_for_all_images(save: bool = False, batch_name: str = "", popups
     :param popups: If True the result images are shown in a popup window
     """
     cwd = os.getcwd()
-    os.chdir(os.path.join(cwd, "images", "in"))  # Changing working directory to read filenames
+    # Changing working directory to read filenames
+    os.chdir(os.path.join(cwd, "images", "in"))
     fish_names = os.listdir()  # Read filenames
     os.chdir(cwd)  # Changing directory back to original
 
@@ -94,8 +96,9 @@ def run_pipeline_for_all_images(save: bool = False, batch_name: str = "", popups
         print(f"# Running image processing algorithm #{i + 1} on file: {name}")
         try:
             fish = image_processing_pipeline(name, save, popups)
-        except():
-            print("Input image file is not the right format (.jpg, .tiff, .czi, .png!")
+        except ():
+            print(
+                "Input image file is not the right format (.jpg, .tiff, .czi, .png!")
 
         if fish.success:
             print("\n")
@@ -126,7 +129,8 @@ def get_names() -> list[str]:
     os.chdir(path)  # Changing working directory to read filenames
 
     fish_names = os.listdir()  # Read filenames
-    dirs = list(filter(lambda x: len(x.split(".")) == 1, fish_names))  # Filter out names
+    dirs = list(filter(lambda x: len(x.split(".")) ==
+                1, fish_names))  # Filter out names
     files = []  # Files
 
     for dir in dirs:

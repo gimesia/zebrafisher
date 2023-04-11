@@ -1,0 +1,50 @@
+<annotation>
+	<folder>3_AB 15 Gy 3 nap</folder>
+	<filename>Snap-910.czi.jpg</filename>
+	<path>C:\Users\aron.gimesi\Documents\.codes\zebrafisher\labeled\3_AB 15 Gy 3 nap\Snap-910.czi.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>1388</width>
+		<height>1040</height>
+		<depth>1</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>embryo</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>843</xmin>
+			<ymin>536</ymin>
+			<xmax>1317</xmax>
+			<ymax>986</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>eye</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>848</xmin>
+			<ymin>914</ymin>
+			<xmax>895</xmax>
+			<ymax>973</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>yolksac</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>871</xmin>
+			<ymin>800</ymin>
+			<xmax>1022</xmax>
+			<ymax>909</ymax>
+		</bndbox>
+	</object>
+</annotation>
