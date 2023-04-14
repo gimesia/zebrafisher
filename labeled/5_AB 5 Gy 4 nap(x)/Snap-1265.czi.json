@@ -1,0 +1,1 @@
+[{"image": "Snap-1265.czi.jpg", "annotations": [{"label": "embryo", "coordinates": {"x": 587.0161290322582, "y": 558.8440860215054, "width": 375.0, "height": 737.0}}, {"label": "eye", "coordinates": {"x": 468.0, "y": 221.5, "width": 56.0, "height": 63.0}}, {"label": "yolksac", "coordinates": {"x": 486.0, "y": 384.5, "width": 118.0, "height": 143.0}}]}]
